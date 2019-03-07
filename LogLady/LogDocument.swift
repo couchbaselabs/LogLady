@@ -10,13 +10,14 @@ import Cocoa
 
 class LogDocument: NSDocument, NSSearchFieldDelegate {
 
-    @IBOutlet private weak var _tableView : NSTableView!
-    @IBOutlet private weak var _dateFormatter : Formatter!
-    @IBOutlet private weak var _domainFilter : NSPopUpButton!
+    @IBOutlet internal weak var _tableView : NSTableView!
+    @IBOutlet internal weak var _dateFormatter : Formatter!
+    @IBOutlet internal weak var _domainFilter : NSPopUpButton!
 
-    private var _allEntries = [LogEntry]()
-    private var _entries = [LogEntry]()
-    private var _filter = LogFilter()
+    internal var _allEntries = [LogEntry]()
+    internal var _entries = [LogEntry]()
+    internal var _filter = LogFilter()
+
 
     override init() {
         super.init()
@@ -28,13 +29,16 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
         LogDocument.kLevelImages[Int(LogLevel.Error.rawValue)] = NSImage(named: "skull.pdf")
     }
 
+
     override class var autosavesInPlace: Bool {
         return true
     }
 
+
     override var windowNibName: NSNib.Name? {
         return NSNib.Name("Document")
     }
+
 
     override func read(from url: URL, ofType typeName: String) throws {
         let data = try String(contentsOf: url, encoding: .utf8)
@@ -46,6 +50,7 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
         }
         _entries = _allEntries
     }
+
 
     override func windowControllerDidLoadNib(_ windowController: NSWindowController) {
         var domains = Set<LogDomain>()
@@ -60,39 +65,16 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
     }
 
 
-    @IBAction func copy(_ sender: AnyObject) {
-        var lines = ""
-        for row in _tableView.selectedRowIndexes {
-            lines += _entries[row].sourceLine + "\n"
-        }
-        NSLog("COPIED: \(lines)")
-
-        let pb = NSPasteboard.general
-        pb.clearContents()
-        pb.setString(lines, forType: NSPasteboard.PasteboardType.string)
-    }
-
-
-    ///// FLAGGING:
-
-
-    @IBAction func flag(_ sender: AnyObject) {
-        let indexes = _tableView.selectedRowIndexes
-        var state: Bool? = nil
-        for row in indexes {
-            let entry = _entries[row]
-            if state == nil {
-                state = !entry.flagged
-            }
-            entry.flagged = state!
-        }
-        _tableView.reloadData(forRowIndexes: indexes, columnIndexes: IndexSet([0]))
-    }
-
-
     func selectRow(_ row : Int) {
         _tableView.selectRowIndexes(IndexSet(integer: row), byExtendingSelection: false)
         _tableView.scrollRowToVisible(row)
+    }
+
+
+    func reloadRowBackground(_ row : Int) {
+        if let rowView = _tableView.rowView(atRow: row, makeIfNecessary: false) {
+            self.tableView(_tableView, didAdd: rowView, forRow: row)
+        }
     }
 
 
@@ -104,137 +86,10 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
         }
     }
 
-
-    @IBAction func selectAllFlags(_ sender: AnyObject) {
-        var flagged = IndexSet()
-        var row = 0
-        for entry in _entries {
-            if entry.flagged {
-                flagged.insert(row)
-            }
-            row += 1
-        }
-        if flagged.isEmpty {
-            NSSound.beep()
-            return
-        }
-        _tableView.selectRowIndexes(flagged, byExtendingSelection: false)
-        scrollSelectionIntoView()
-    }
-
-
-    @IBAction func selectNextFlag(_ sender: AnyObject) {
-        var row = (_tableView.selectedRowIndexes.last ?? -1) + 1
-        for entry in _entries[row..<_entries.endIndex] {
-            if entry.flagged {
-                selectRow(row)
-                return
-            }
-            row += 1
-        }
-        NSSound.beep()
-    }
-
-
-    @IBAction func selectPrevFlag(_ sender: AnyObject) {
-        var row = (_tableView.selectedRowIndexes.first ?? _entries.count) - 1
-        for entry in _entries[0...row].reversed() {
-            if entry.flagged {
-                selectRow(row)
-                return
-            }
-            row -= 1
-        }
-        NSSound.beep()
-    }
-
-
-    ///// FILTERING:
-
-
-    func updateFilter(alwaysReload: Bool = false) {
-        let filteredEntries = _allEntries.filter{ $0.matches(_filter) }
-        if filteredEntries == _entries {
-            if alwaysReload {
-                _tableView.reloadData()
-            }
-            return
-        }
-
-        let oldSel = IndexSet( _tableView.selectedRowIndexes.map { _entries[$0].index } )
-        _tableView.deselectAll(nil)
-        
-        _entries = filteredEntries
-        _tableView.reloadData()
-
-        var newSel = IndexSet()
-        var row = 0
-        for entry in _entries {
-            if oldSel.contains(entry.index) {
-                newSel.insert(row)
-            }
-            row += 1
-        }
-        _tableView.selectRowIndexes(newSel, byExtendingSelection: false)
-        scrollSelectionIntoView()
-    }
-
-
-    @IBAction func filter(_ sender: AnyObject) {
-        _filter.string = (sender as! NSSearchField).stringValue
-        if let f = _filter.string, f.isEmpty {
-            _filter.string = nil
-        }
-        updateFilter(alwaysReload: true)
-    }
-
-
-    @IBAction func toggleHideUnmarked(_ sender: AnyObject) {
-        _filter.onlyMarked = !_filter.onlyMarked
-        updateFilter()
-    }
-
-
-    @IBAction func toggleFocusObject(_ sender: AnyObject) {
-
-    }
-
-
-    @IBAction func filterLevels(_ sender: AnyObject) {
-        let item = (sender as! NSPopUpButton).selectedItem!
-        _filter.minLevel = LogLevel(rawValue: Int8(item.tag))!
-        updateFilter()
-    }
-
-
-    @IBAction func filterDomain(_ sender: AnyObject) {
-        let item = (sender as! NSPopUpButton).selectedItem!
-        if item.tag == -2 {
-            _filter.domains = nil
-        } else {
-            var domain: LogDomain? = nil
-            if item.tag >= 0 {
-                domain = LogDomain.named(item.title)
-            }
-            _filter.domains = [domain]
-        }
-        updateFilter()
-    }
-
-
-    override func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
-        switch item.action {
-        case #selector(copy(_:)), #selector(flag(_:)):
-            return _tableView.selectedRow >= 0
-        case #selector(toggleHideUnmarked(_:)):
-            (item as? NSMenuItem)?.state = (_filter.onlyMarked ? NSControl.StateValue.on : NSControl.StateValue.off)
-            return true
-        default:
-            return super.validateUserInterfaceItem(item)
-        }
-    }
-
 }
+
+
+//////// TABLE VIEW:
 
 
 extension LogDocument: NSTableViewDataSource {
@@ -283,7 +138,7 @@ extension LogDocument: NSTableViewDelegate {
                 let color: NSColor?
                 switch entry.level {
                 case LogLevel.None, LogLevel.Verbose, LogLevel.Debug:
-                    color = NSColor(white: 0.5, alpha: 1)
+                    color = NSColor.disabledControlTextColor
                 case LogLevel.Warning, LogLevel.Error:
                     color = NSColor(red: 0.7, green: 0, blue: 0, alpha: 1)
                 default:
@@ -309,6 +164,12 @@ extension LogDocument: NSTableViewDelegate {
         let entry = _entries[row]
         rowView.backgroundColor = entry.flagged ? NSColor.yellow : NSColor.clear
     }
+
+
+    func tableView(_ tableView: NSTableView, shouldEdit tableColumn: NSTableColumn?, row: Int) -> Bool {
+        return tableColumn != nil && tableColumn!.identifier.rawValue == "message"
+    }
+
 
 
     private func setHighlightedString(_ string: Substring?, in textField: NSTextField) {

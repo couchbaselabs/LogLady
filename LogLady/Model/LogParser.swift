@@ -15,8 +15,9 @@ protocol LogParser {
 
 
 func LiteCoreLogParser() -> TextLogParser {
-    // Sample line:      18:21:02.502713| [Sync] WARNING: {repl#1234} Woe is me
-    let regex = "^(\\d\\d:\\d\\d:\\d\\d.\\d+)\\|\\s*(?:(?:\\[(\\w+)\\])(?:\\s(\\w+))?:\\s*(?:\\{(.+)\\})?\\s*)?(.*)$"
+    // Logs from LiteCore itself, or its LogDecoder:
+    //     18:21:02.502713| [Sync] WARNING: {repl#1234} Woe is me
+    let regex = "^(\\d\\d:\\d\\d:\\d\\d.\\d+)\\|\\s*(?:(?:\\[(\\w+)\\])(?:\\s(\\w+))?:\\s*(?:\\{(.+?)\\})?\\s*)?(.*)$"
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "HH:mm:ss.SSSSSS"
     dateFormatter.defaultDate = Date()
@@ -25,7 +26,9 @@ func LiteCoreLogParser() -> TextLogParser {
 
 
 func CocoaLogParser() -> TextLogParser {
-    let regex = "^([\\d-]+ [\\d:.+]+) .*\\[\\d+:\\d+] (?:CouchbaseLite (\\w+) (\\w+): (?:\\{(.*)\\} )?)?(.*)$"
+    // Logs from iOS/Mac apps.
+    //     2019-01-22 00:47:33.200154+0530 My App[2694:52664] CouchbaseLite BLIP Verbose: {BLIPIO#2} Finished
+    let regex = "^([\\d-]+ [\\d:.+]+) .*\\[\\d+:\\d+] (?:CouchbaseLite (\\w+) (\\w+): (?:\\{(.+?)\\} )?)?(.*)$"
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSSSSZZZZ"
     return try! TextLogParser(regexStr: regex, dateFormat: dateFormatter)

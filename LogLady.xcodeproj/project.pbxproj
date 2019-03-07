@@ -22,6 +22,7 @@
 		275FA31622306A92001C392D /* comment.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 275FA31122306A92001C392D /* comment.pdf */; };
 		275FA31922306D35001C392D /* flag-checkered.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 275FA31722306D34001C392D /* flag-checkered.pdf */; };
 		275FA31A22306D35001C392D /* flag.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 275FA31822306D35001C392D /* flag.pdf */; };
+		275FA31F2230AC51001C392D /* LogDocument+Commands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 275FA31E2230AC51001C392D /* LogDocument+Commands.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,7 @@
 		275FA31122306A92001C392D /* comment.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = comment.pdf; sourceTree = "<group>"; };
 		275FA31722306D34001C392D /* flag-checkered.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "flag-checkered.pdf"; sourceTree = "<group>"; };
 		275FA31822306D35001C392D /* flag.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = flag.pdf; sourceTree = "<group>"; };
+		275FA31E2230AC51001C392D /* LogDocument+Commands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogDocument+Commands.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 				275FA2FF22304B0C001C392D /* Model */,
 				275FA2D9222F0AFD001C392D /* AppDelegate.swift */,
 				275FA2DB222F0AFD001C392D /* LogDocument.swift */,
+				275FA31E2230AC51001C392D /* LogDocument+Commands.swift */,
 				275FA2DD222F0AFD001C392D /* Document.xib */,
 				275FA2E0222F0AFF001C392D /* Assets.xcassets */,
 				275FA2E2222F0AFF001C392D /* MainMenu.xib */,
@@ -252,6 +255,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				275FA2DC222F0AFD001C392D /* LogDocument.swift in Sources */,
+				275FA31F2230AC51001C392D /* LogDocument+Commands.swift in Sources */,
 				275FA2DA222F0AFD001C392D /* AppDelegate.swift in Sources */,
 				275FA2FD222F10B9001C392D /* LogParser.swift in Sources */,
 				275FA2FB222F0D41001C392D /* LogEntry.swift in Sources */,
