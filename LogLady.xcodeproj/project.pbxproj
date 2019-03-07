@@ -8,11 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		275FA2DA222F0AFD001C392D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 275FA2D9222F0AFD001C392D /* AppDelegate.swift */; };
-		275FA2DC222F0AFD001C392D /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 275FA2DB222F0AFD001C392D /* Document.swift */; };
+		275FA2DC222F0AFD001C392D /* LogDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 275FA2DB222F0AFD001C392D /* LogDocument.swift */; };
 		275FA2DF222F0AFD001C392D /* Document.xib in Resources */ = {isa = PBXBuildFile; fileRef = 275FA2DD222F0AFD001C392D /* Document.xib */; };
 		275FA2E1222F0AFF001C392D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 275FA2E0222F0AFF001C392D /* Assets.xcassets */; };
 		275FA2E4222F0AFF001C392D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 275FA2E2222F0AFF001C392D /* MainMenu.xib */; };
 		275FA2F0222F0AFF001C392D /* LogLadyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 275FA2EF222F0AFF001C392D /* LogLadyTests.swift */; };
+		275FA2FB222F0D41001C392D /* LogEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 275FA2FA222F0D41001C392D /* LogEntry.swift */; };
+		275FA2FD222F10B9001C392D /* LogParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 275FA2FC222F10B9001C392D /* LogParser.swift */; };
+		275FA31222306A92001C392D /* stethoscope.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 275FA30D22306A91001C392D /* stethoscope.pdf */; };
+		275FA31322306A92001C392D /* skull.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 275FA30E22306A91001C392D /* skull.pdf */; };
+		275FA31422306A92001C392D /* exclamation-triangle.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 275FA30F22306A91001C392D /* exclamation-triangle.pdf */; };
+		275FA31522306A92001C392D /* info.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 275FA31022306A91001C392D /* info.pdf */; };
+		275FA31622306A92001C392D /* comment.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 275FA31122306A92001C392D /* comment.pdf */; };
+		275FA31922306D35001C392D /* flag-checkered.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 275FA31722306D34001C392D /* flag-checkered.pdf */; };
+		275FA31A22306D35001C392D /* flag.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 275FA31822306D35001C392D /* flag.pdf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,9 +35,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		275FA2D6222F0AFD001C392D /* LogLady.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LogLady.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		275FA2D6222F0AFD001C392D /* Log Lady.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Log Lady.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		275FA2D9222F0AFD001C392D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		275FA2DB222F0AFD001C392D /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
+		275FA2DB222F0AFD001C392D /* LogDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDocument.swift; sourceTree = "<group>"; };
 		275FA2DE222F0AFD001C392D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Document.xib; sourceTree = "<group>"; };
 		275FA2E0222F0AFF001C392D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		275FA2E3222F0AFF001C392D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -37,6 +46,16 @@
 		275FA2EB222F0AFF001C392D /* LogLadyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LogLadyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		275FA2EF222F0AFF001C392D /* LogLadyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogLadyTests.swift; sourceTree = "<group>"; };
 		275FA2F1222F0AFF001C392D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		275FA2FA222F0D41001C392D /* LogEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEntry.swift; sourceTree = "<group>"; };
+		275FA2FC222F10B9001C392D /* LogParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogParser.swift; sourceTree = "<group>"; };
+		275FA2FE222F208F001C392D /* LogLady.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = LogLady.playground; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		275FA30D22306A91001C392D /* stethoscope.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = stethoscope.pdf; sourceTree = "<group>"; };
+		275FA30E22306A91001C392D /* skull.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = skull.pdf; sourceTree = "<group>"; };
+		275FA30F22306A91001C392D /* exclamation-triangle.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "exclamation-triangle.pdf"; sourceTree = "<group>"; };
+		275FA31022306A91001C392D /* info.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = info.pdf; sourceTree = "<group>"; };
+		275FA31122306A92001C392D /* comment.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = comment.pdf; sourceTree = "<group>"; };
+		275FA31722306D34001C392D /* flag-checkered.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "flag-checkered.pdf"; sourceTree = "<group>"; };
+		275FA31822306D35001C392D /* flag.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = flag.pdf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,7 +88,7 @@
 		275FA2D7222F0AFD001C392D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				275FA2D6222F0AFD001C392D /* LogLady.app */,
+				275FA2D6222F0AFD001C392D /* Log Lady.app */,
 				275FA2EB222F0AFF001C392D /* LogLadyTests.xctest */,
 			);
 			name = Products;
@@ -78,13 +97,16 @@
 		275FA2D8222F0AFD001C392D /* LogLady */ = {
 			isa = PBXGroup;
 			children = (
+				275FA2FE222F208F001C392D /* LogLady.playground */,
+				275FA2FF22304B0C001C392D /* Model */,
 				275FA2D9222F0AFD001C392D /* AppDelegate.swift */,
-				275FA2DB222F0AFD001C392D /* Document.swift */,
+				275FA2DB222F0AFD001C392D /* LogDocument.swift */,
 				275FA2DD222F0AFD001C392D /* Document.xib */,
 				275FA2E0222F0AFF001C392D /* Assets.xcassets */,
 				275FA2E2222F0AFF001C392D /* MainMenu.xib */,
 				275FA2E5222F0AFF001C392D /* Info.plist */,
 				275FA2E6222F0AFF001C392D /* LogLady.entitlements */,
+				275FA30C22306A86001C392D /* Icons */,
 			);
 			path = LogLady;
 			sourceTree = "<group>";
@@ -98,12 +120,35 @@
 			path = LogLadyTests;
 			sourceTree = "<group>";
 		};
+		275FA2FF22304B0C001C392D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				275FA2FA222F0D41001C392D /* LogEntry.swift */,
+				275FA2FC222F10B9001C392D /* LogParser.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		275FA30C22306A86001C392D /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				275FA31122306A92001C392D /* comment.pdf */,
+				275FA30F22306A91001C392D /* exclamation-triangle.pdf */,
+				275FA31722306D34001C392D /* flag-checkered.pdf */,
+				275FA31822306D35001C392D /* flag.pdf */,
+				275FA31022306A91001C392D /* info.pdf */,
+				275FA30E22306A91001C392D /* skull.pdf */,
+				275FA30D22306A91001C392D /* stethoscope.pdf */,
+			);
+			path = Icons;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		275FA2D5222F0AFD001C392D /* LogLady */ = {
+		275FA2D5222F0AFD001C392D /* Log Lady */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 275FA2F4222F0AFF001C392D /* Build configuration list for PBXNativeTarget "LogLady" */;
+			buildConfigurationList = 275FA2F4222F0AFF001C392D /* Build configuration list for PBXNativeTarget "Log Lady" */;
 			buildPhases = (
 				275FA2D2222F0AFD001C392D /* Sources */,
 				275FA2D3222F0AFD001C392D /* Frameworks */,
@@ -113,9 +158,9 @@
 			);
 			dependencies = (
 			);
-			name = LogLady;
+			name = "Log Lady";
 			productName = LogLady;
-			productReference = 275FA2D6222F0AFD001C392D /* LogLady.app */;
+			productReference = 275FA2D6222F0AFD001C392D /* Log Lady.app */;
 			productType = "com.apple.product-type.application";
 		};
 		275FA2EA222F0AFF001C392D /* LogLadyTests */ = {
@@ -168,7 +213,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				275FA2D5222F0AFD001C392D /* LogLady */,
+				275FA2D5222F0AFD001C392D /* Log Lady */,
 				275FA2EA222F0AFF001C392D /* LogLadyTests */,
 			);
 		};
@@ -179,8 +224,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				275FA31422306A92001C392D /* exclamation-triangle.pdf in Resources */,
+				275FA31322306A92001C392D /* skull.pdf in Resources */,
+				275FA31922306D35001C392D /* flag-checkered.pdf in Resources */,
+				275FA31222306A92001C392D /* stethoscope.pdf in Resources */,
+				275FA31A22306D35001C392D /* flag.pdf in Resources */,
 				275FA2E1222F0AFF001C392D /* Assets.xcassets in Resources */,
 				275FA2DF222F0AFD001C392D /* Document.xib in Resources */,
+				275FA31522306A92001C392D /* info.pdf in Resources */,
+				275FA31622306A92001C392D /* comment.pdf in Resources */,
 				275FA2E4222F0AFF001C392D /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -199,8 +251,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				275FA2DC222F0AFD001C392D /* Document.swift in Sources */,
+				275FA2DC222F0AFD001C392D /* LogDocument.swift in Sources */,
 				275FA2DA222F0AFD001C392D /* AppDelegate.swift in Sources */,
+				275FA2FD222F10B9001C392D /* LogParser.swift in Sources */,
+				275FA2FB222F0D41001C392D /* LogEntry.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -217,7 +271,7 @@
 /* Begin PBXTargetDependency section */
 		275FA2ED222F0AFF001C392D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 275FA2D5222F0AFD001C392D /* LogLady */;
+			target = 275FA2D5222F0AFD001C392D /* Log Lady */;
 			targetProxy = 275FA2EC222F0AFF001C392D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -370,6 +424,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.couchbase.LogLady;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -389,6 +444,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.couchbase.LogLady;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -449,7 +505,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		275FA2F4222F0AFF001C392D /* Build configuration list for PBXNativeTarget "LogLady" */ = {
+		275FA2F4222F0AFF001C392D /* Build configuration list for PBXNativeTarget "Log Lady" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				275FA2F5222F0AFF001C392D /* Debug */,
