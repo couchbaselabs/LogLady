@@ -13,10 +13,12 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
     @IBOutlet internal weak var _tableView : NSTableView!
     @IBOutlet internal weak var _dateFormatter : Formatter!
     @IBOutlet internal weak var _domainFilter : NSPopUpButton!
+    @IBOutlet internal weak var _textFinder : NSTextFinder!
 
     internal var _allEntries = [LogEntry]()
     internal var _entries = [LogEntry]()
     internal var _filter = LogFilter()
+    internal var _filterRange = 0..<0
 
 
     override init() {
@@ -49,10 +51,12 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
             _allEntries = try LiteCoreLogParser().parse(data)
         }
         _entries = _allEntries
+        _filterRange = 0 ..< _allEntries.endIndex
     }
 
 
     override func windowControllerDidLoadNib(_ windowController: NSWindowController) {
+        // Initialize domains pop-up:
         var domains = Set<LogDomain>()
         for e in _allEntries {
             if let domain = e.domain {
@@ -114,7 +118,7 @@ extension LogDocument: NSTableViewDelegate {
                 // Text:
                 switch colID.rawValue {
                 case "index":
-                    var str = String(entry.index)
+                    var str = String(entry.index + 1)
                     if entry.flagged {
                         str = "🚩 " + str
                     }
@@ -145,6 +149,12 @@ extension LogDocument: NSTableViewDelegate {
                     color = NSColor.controlTextColor
                 }
                 textField.textColor = color
+
+                // Font:
+                if let font = textField.font {
+                    let mask = entry.flagged ? NSFontTraitMask.boldFontMask : NSFontTraitMask.unboldFontMask
+                    textField.font = NSFontManager.shared.convert(font, toHaveTrait: mask)
+                }
             }
             if let imageView = view.imageView {
                 switch colID.rawValue {
@@ -194,4 +204,15 @@ extension LogDocument: NSTableViewDelegate {
             start = rMatch.upperBound
         }
     }
+}
+
+
+extension LogDocument : NSTextFinderClient {
+
+    @IBAction func performTextFinderAction(_ sender: AnyObject?) {
+        if let button = sender as? NSValidatedUserInterfaceItem {
+            _textFinder.performAction(NSTextFinder.Action(rawValue: button.tag)!)
+        }
+    }
+
 }

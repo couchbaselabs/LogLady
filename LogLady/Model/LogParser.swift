@@ -10,11 +10,11 @@ import Foundation
 
 
 protocol LogParser {
-    func parse (_ data: String) throws -> [LogEntry]
+    func parse(_ data: String) throws -> [LogEntry]
 }
 
 
-func LiteCoreLogParser() -> TextLogParser {
+func LiteCoreLogParser() -> LogParser {
     // Logs from LiteCore itself, or its LogDecoder:
     //     18:21:02.502713| [Sync] WARNING: {repl#1234} Woe is me
     let regex = "^(\\d\\d:\\d\\d:\\d\\d.\\d+)\\|\\s*(?:(?:\\[(\\w+)\\])(?:\\s(\\w+))?:\\s*(?:\\{(.+?)\\})?\\s*)?(.*)$"
@@ -25,7 +25,7 @@ func LiteCoreLogParser() -> TextLogParser {
 }
 
 
-func CocoaLogParser() -> TextLogParser {
+func CocoaLogParser() -> LogParser {
     // Logs from iOS/Mac apps.
     //     2019-01-22 00:47:33.200154+0530 My App[2694:52664] CouchbaseLite BLIP Verbose: {BLIPIO#2} Finished
     let regex = "^([\\d-]+ [\\d:.+]+) .*\\[\\d+:\\d+] (?:CouchbaseLite (\\w+) (\\w+): (?:\\{(.+?)\\} )?)?(.*)$"
@@ -42,8 +42,8 @@ class TextLogParser : LogParser {
         self.dateFormatter = dateFormat
     }
 
-    func parse (_ data: String) throws -> [LogEntry] {
-        index = 0
+    func parse(_ data: String) throws -> [LogEntry] {
+        self.index = 0
         var messages = [LogEntry]()
         var matched = false
 
@@ -56,9 +56,9 @@ class TextLogParser : LogParser {
             let line = data[startIndex..<endIndex]
             startIndex = lineEndIndex
 
-            self.index += 1
             let entry = self.parseLine(line)
             messages.append(entry)
+            self.index += 1
 
             if entry.timestamp > 0 {
                 matched = true
@@ -70,18 +70,10 @@ class TextLogParser : LogParser {
         return messages
     }
 
+    private let dateFormatter: DateFormatter
+    private let lineRegex: NSRegularExpression
+
     private var index = 0
-
-    private var dateFormatter: DateFormatter
-
-    private var lineRegex: NSRegularExpression
-
-    private func matched(_ match: NSTextCheckingResult, _ group: Int, in str: String) -> Substring? {
-        guard let r = Range(match.range(at: group), in: str) else {
-            return nil
-        }
-        return str[r]
-    }
 
     private func parseLine(_ subLine: Substring) -> LogEntry {
         let line = String(subLine)
@@ -113,11 +105,18 @@ class TextLogParser : LogParser {
                         domain: domain, object: object, message: message)
     }
 
+    private func matched(_ match: NSTextCheckingResult, _ group: Int, in str: String) -> Substring? {
+        guard let r = Range(match.range(at: group), in: str) else {
+            return nil
+        }
+        return str[r]
+    }
+
     private static let kLevelsByName : [String:LogLevel] = [
-        "debug":LogLevel.Debug,
-        "verbose":LogLevel.Verbose,
-        "info":LogLevel.Info,
-        "warning":LogLevel.Warning,
-        "error":LogLevel.Error,
+        "debug":    LogLevel.Debug,
+        "verbose":  LogLevel.Verbose,
+        "info":     LogLevel.Info,
+        "warning":  LogLevel.Warning,
+        "error":    LogLevel.Error,
     ]
 }

@@ -39,7 +39,7 @@ extension LogDocument {
             reloadRowBackground(row)
         }
         _tableView.reloadData(forRowIndexes: indexes,
-                              columnIndexes: IndexSet([0]))
+                              columnIndexes: IndexSet(0..<_tableView.tableColumns.count))
     }
 
 
@@ -91,7 +91,7 @@ extension LogDocument {
 
 
     func updateFilter(alwaysReload: Bool = false) {
-        let filteredEntries = _allEntries.filter{ $0.matches(_filter) }
+        let filteredEntries = _allEntries[_filterRange].filter{ $0.matches(_filter) }
         if filteredEntries == _entries {
             if alwaysReload {
                 _tableView.reloadData()
@@ -118,12 +118,19 @@ extension LogDocument {
     }
 
 
+    @IBAction func clearFilters(_ sender: AnyObject) {
+        _filter = LogFilter()
+        _filterRange = 0 ..< _allEntries.count
+        updateFilter()
+    }
+
+
     @IBAction func filter(_ sender: AnyObject) {
         _filter.string = (sender as! NSSearchField).stringValue
         if let f = _filter.string, f.isEmpty {
             _filter.string = nil
         }
-        updateFilter(alwaysReload: true)
+        updateFilter(alwaysReload: true)        // always update message highlight
     }
 
 
@@ -160,12 +167,54 @@ extension LogDocument {
     }
 
 
+    //////// ROW RANGE FILTER:
+
+
+    var filterRange : Range<Int> {
+        get { return _filterRange }
+        set {
+            if newValue != _filterRange {
+                _filterRange = newValue
+                updateFilter()
+            }
+        }
+    }
+
+
+    @IBAction func filterToSelectedRows(_ sender: AnyObject) {
+        let sel = _tableView.selectedRowIndexes
+        guard !sel.isEmpty else {
+            NSSound.beep()
+            return
+        }
+        self.filterRange = Range(_entries[sel.first!].index ... _entries[sel.last!].index)
+        _tableView.deselectAll(nil)
+    }
+
+    @IBAction func hideRowsBefore(_ sender: AnyObject) {
+        if let first = _tableView.selectedRowIndexes.first {
+            self.filterRange = _entries[first].index ..< _filterRange.upperBound
+        }
+    }
+
+    @IBAction func hideRowsAfter(_ sender: AnyObject) {
+        if let last = _tableView.selectedRowIndexes.last {
+            self.filterRange = Range(_filterRange.lowerBound ... _entries[last].index)
+        }
+    }
+
+    @IBAction func clearRowFilter(_ sender: AnyObject) {
+        self.filterRange = 0 ..< _allEntries.count
+    }
+
+
     //////// VALIDATION:
 
 
     override func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
         switch item.action {
-        case #selector(copy(_:)), #selector(flag(_:)):
+        case #selector(copy(_:)), #selector(flag(_:)), #selector(filterToSelectedRows(_:)),
+        #selector(hideRowsBefore(_:)), #selector(hideRowsAfter(_:)):
             return _tableView.selectedRow >= 0
         case #selector(toggleHideUnmarked(_:)):
             (item as? NSMenuItem)?.state = (_filter.onlyMarked ? NSControl.StateValue.on : NSControl.StateValue.off)

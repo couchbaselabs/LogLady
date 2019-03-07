@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.64"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -10,6 +11,7 @@
                 <outlet property="_dateFormatter" destination="DZ4-x3-mqy" id="lIJ-tA-x8V"/>
                 <outlet property="_domainFilter" destination="vQk-S2-8rB" id="yX9-zO-BdP"/>
                 <outlet property="_tableView" destination="vvY-KH-z3l" id="Vuv-Ac-l2P"/>
+                <outlet property="_textFinder" destination="2AF-hU-Voh" id="1CD-dj-nqU"/>
                 <outlet property="window" destination="xOd-HO-29H" id="JIz-fz-R2o"/>
             </connections>
         </customObject>
@@ -364,6 +366,12 @@
             <point key="canvasLocation" x="226.5" y="-20.5"/>
         </window>
         <dateFormatter formatterBehavior="custom10_4" timeStyle="short" dateFormat="hh:mm:ss.SSSSSS" id="DZ4-x3-mqy"/>
+        <textFinder id="2AF-hU-Voh">
+            <connections>
+                <outlet property="client" destination="-2" id="eHS-ok-sUS"/>
+                <outlet property="findBarContainer" destination="Qo9-sv-TEM" id="395-nj-GhT"/>
+            </connections>
+        </textFinder>
     </objects>
     <resources>
         <image name="flag" width="384" height="384"/>

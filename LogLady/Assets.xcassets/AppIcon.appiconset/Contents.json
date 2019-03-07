@@ -43,12 +43,13 @@
     {
       "size" : "512x512",
       "idiom" : "mac",
-      "filename" : "LogLady.png",
+      "filename" : "log-512.png",
       "scale" : "1x"
     },
     {
-      "idiom" : "mac",
       "size" : "512x512",
+      "idiom" : "mac",
+      "filename" : "log-1.png",
       "scale" : "2x"
     }
   ],
