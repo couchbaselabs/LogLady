@@ -20,6 +20,12 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
     internal var _filter = LogFilter()
     internal var _filterRange = 0..<0
 
+    // Starting index of each entry's .message string, in concatenation of all the messages
+    internal var _entryTextPos : [Int]? = nil
+    internal var _entryTextPosHint : Int? = nil
+    // Character range to highlight in each Entry
+    internal var _entryFindHighlightRanges = [LogEntry:[Range<Int>]]()
+    internal var _curIncrementalMatchRanges = [NSValue]()
 
     override init() {
         super.init()
@@ -52,6 +58,8 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
         }
         _entries = _allEntries
         _filterRange = 0 ..< _allEntries.endIndex
+        _entryTextPos = nil
+        _entryTextPosHint = nil
     }
 
 
@@ -66,6 +74,8 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
         for name in (domains.map{$0.name}.sorted()) {
             _domainFilter.addItem(withTitle: name)
         }
+        
+        setupTextFinder()
     }
 
 
@@ -108,6 +118,7 @@ extension LogDocument: NSTableViewDelegate {
     private static var kLevelImages: [NSImage?] = [nil, nil, nil, nil, nil, nil]
 
     private static var kTextMatchAttributes = [NSAttributedString.Key:Any]()
+    private static var kTextFinderAttributes = [NSAttributedString.Key:Any]()
 
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         let colID = tableColumn!.identifier
@@ -128,12 +139,14 @@ extension LogDocument: NSTableViewDelegate {
                         textField.formatter = _dateFormatter
                     }
                     textField.objectValue = entry.date
-                case "message":
-                    setHighlightedString(entry.message, in: textField)
-                case "object":
-                    setHighlightedString(entry.object, in: textField)
                 case "domain":
                     textField.objectValue = entry.domain?.name
+                case "object":
+                    setHighlightedString(entry.object, in: textField)
+                case "message":
+                    setHighlightedString(entry.message,
+                                         foundRanges: _entryFindHighlightRanges[entry],
+                                         in: textField)
                 default:
                     textField.objectValue = nil
                 }
@@ -182,11 +195,25 @@ extension LogDocument: NSTableViewDelegate {
 
 
 
-    private func setHighlightedString(_ string: Substring?, in textField: NSTextField) {
+    private func setHighlightedString(_ string: Substring?,
+                                      foundRanges: [Range<Int>]? = nil,
+                                      in textField: NSTextField)
+    {
         textField.objectValue = string
-        if let match = _filter.string, string != nil {
+        if _filter.string != nil || foundRanges != nil {
             let astr = textField.attributedStringValue.mutableCopy() as! NSMutableAttributedString
-            highlight(substring: match, in: astr)
+            if let match = _filter.string {
+                highlight(substring: match, in: astr)
+            }
+            if let foundRanges = foundRanges {
+                if LogDocument.kTextFinderAttributes.isEmpty {
+                    LogDocument.kTextFinderAttributes[NSAttributedString.Key.backgroundColor] = NSColor.orange
+                }
+                for range in foundRanges {
+                    astr.setAttributes(LogDocument.kTextFinderAttributes,
+                                       range: NSRange(range))
+                }
+            }
             textField.attributedStringValue = astr
         }
     }
@@ -204,15 +231,4 @@ extension LogDocument: NSTableViewDelegate {
             start = rMatch.upperBound
         }
     }
-}
-
-
-extension LogDocument : NSTextFinderClient {
-
-    @IBAction func performTextFinderAction(_ sender: AnyObject?) {
-        if let button = sender as? NSValidatedUserInterfaceItem {
-            _textFinder.performAction(NSTextFinder.Action(rawValue: button.tag)!)
-        }
-    }
-
 }

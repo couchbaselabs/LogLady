@@ -99,10 +99,14 @@ extension LogDocument {
             return
         }
 
+        NSLog("Updating filtered rows!")
         let oldSel = IndexSet( _tableView.selectedRowIndexes.map { _entries[$0].index } )
         _tableView.deselectAll(nil)
+        _textFinder.noteClientStringWillChange()
 
         _entries = filteredEntries
+        _entryTextPos = nil
+        _entryTextPosHint = nil
         _tableView.reloadData()
 
         var newSel = IndexSet()
@@ -219,6 +223,9 @@ extension LogDocument {
         case #selector(toggleHideUnmarked(_:)):
             (item as? NSMenuItem)?.state = (_filter.onlyMarked ? NSControl.StateValue.on : NSControl.StateValue.off)
             return true
+        case #selector(performTextFinderAction(_:)):
+            NSLog("validate TextFinder action \(item.tag)")
+            return _textFinder.validateAction(NSTextFinder.Action(rawValue: item.tag)!)
         default:
             return super.validateUserInterfaceItem(item)
         }

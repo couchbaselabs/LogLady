@@ -117,3 +117,9 @@ extension LogEntry : Equatable {
         return lhs.index == rhs.index    // only works for entries in the same document
     }
 }
+
+extension LogEntry : Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(index)
+    }
+}

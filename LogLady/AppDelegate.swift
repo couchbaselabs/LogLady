@@ -11,15 +11,15 @@ import Cocoa
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // Insert code here to initialize your application
-    }
-
-    func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
-    }
-
     func applicationShouldOpenUntitledFile(_ sender: NSApplication) -> Bool {
+        // Display an Open panel instead of creating an untitled doc, on launch
+        DispatchQueue.main.async {
+            NSDocumentController.shared.openDocument(self)
+        }
+        return false
+    }
+
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return false
     }
 
