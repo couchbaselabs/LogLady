@@ -169,6 +169,19 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="uyl-h8-XO2"/>
+                            <menuItem title="Select Previous Warning / Error" keyEquivalent="" id="idS-qU-E1i">
+                                <modifierMask key="keyEquivalentModifierMask" control="YES"/>
+                                <connections>
+                                    <action selector="selectPrevWarning:" target="-1" id="iMv-HY-evq"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Select Next Warning / Error" keyEquivalent="" id="P1u-rA-Uwq">
+                                <modifierMask key="keyEquivalentModifierMask" control="YES"/>
+                                <connections>
+                                    <action selector="selectNextWarning:" target="-1" id="pow-ms-bw8"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="tNI-1B-fV5"/>
                             <menuItem title="Find" id="4EN-yA-p0u">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Find" id="1b7-l0-nxx">
@@ -233,6 +246,124 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="WHW-Z2-cYb"/>
+                            <menuItem title="Set Flag" id="0r9-ei-bvY">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Set Flag" id="QSY-ZD-tpg">
+                                    <items>
+                                        <menuItem title="🚩" id="uj8-oK-DMx">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="WPH-HE-OSB"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="🏁" id="xJ7-Wa-sqo">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="Z8L-Kn-wF7"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="🏴‍☠️" id="2Kx-uF-gdW">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="FHF-x6-FjJ"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="➕" id="W5D-9M-G8Y">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="hTJ-f8-jbb"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="➖" id="TRk-x7-kyV">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="Dua-lk-tXY"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="✔️" id="WbJ-IJ-AqY">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="yJc-gJ-1MP"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="❌" id="fK9-Ud-QEM">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="3CJ-sh-yxA"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="❓" id="rwp-uY-6ID">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="WoP-fm-bxd"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="⁉️" id="ofF-ag-dwO">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="Jgz-O3-Th6"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="🔻" id="1he-0d-EBM">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="cxm-iY-0LA"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="🔺" id="AC1-k6-GMq">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="iZW-sr-Ehe"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="🛑" id="0ci-s0-dE5">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="40v-eE-OrH"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="🔶" id="DS3-ri-vBw">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="3bl-Q7-O5G"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="🔷" id="hCT-wL-W7b">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="ImZ-EM-LoO"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="💥" id="dTA-0i-Onr">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="GOK-hA-Zp2"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="🤯" id="hfR-d7-ukV">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="hGr-4R-R4U"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="🤮" id="dfo-og-DHY">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="L05-KU-tBe"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="☠️" id="1wc-E0-kWw">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="flag:" target="-1" id="SAj-HZ-hpX"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                                <connections>
+                                    <action selector="flag:" target="-1" id="kJt-ja-9rK"/>
+                                </connections>
+                            </menuItem>
                         </items>
                     </menu>
                 </menuItem>
@@ -253,7 +384,7 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="7C6-SS-R3h"/>
-                            <menuItem title="Hide Unflagged Entries" id="KHm-C8-UAV">
+                            <menuItem title="Focus On Flagged Entries" id="KHm-C8-UAV">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="toggleHideUnmarked:" target="-1" id="zAS-Jp-gWu"/>
@@ -266,6 +397,12 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="fti-Aa-t5x"/>
+                            <menuItem title="Focus On Selection" id="izf-lQ-MSO">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="filterToSelectedRows:" target="-1" id="Plu-KC-zvR"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Hide Rows Above Selection" id="NFl-9f-9j7">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
@@ -278,12 +415,6 @@
                                     <action selector="hideRowsAfter:" target="-1" id="B3N-95-fub"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Hide Rows Outside Selection" id="izf-lQ-MSO">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="filterToSelectedRows:" target="-1" id="Plu-KC-zvR"/>
-                                </connections>
-                            </menuItem>
                             <menuItem title="Clear Row Focus" id="DcG-rW-y5D">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
@@ -291,8 +422,7 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="b5W-ou-KiM"/>
-                            <menuItem title="Clear All Filters" id="6NB-rF-8uH">
-                                <modifierMask key="keyEquivalentModifierMask"/>
+                            <menuItem title="Clear All Filters" keyEquivalent="\" id="6NB-rF-8uH">
                                 <connections>
                                     <action selector="clearFilters:" target="-1" id="zrU-IM-hlG"/>
                                 </connections>
@@ -346,5 +476,11 @@
                 </menuItem>
             </items>
         </menu>
+        <menuItem title="✔️" id="deN-RG-rNx">
+            <modifierMask key="keyEquivalentModifierMask"/>
+            <connections>
+                <action selector="flag:" target="-1" id="cUE-KQ-DGO"/>
+            </connections>
+        </menuItem>
     </objects>
 </document>

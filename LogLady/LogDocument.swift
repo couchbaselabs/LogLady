@@ -19,6 +19,7 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
     internal var _entries = [LogEntry]()
     internal var _filter = LogFilter()
     internal var _filterRange = 0..<0
+    internal var _flagMarker : String?
 
     // Starting index of each entry's .message string, in concatenation of all the messages
     internal var _entryTextPos : [Int]? = nil
@@ -123,6 +124,7 @@ extension LogDocument: NSTableViewDelegate {
 
     private static var kTextMatchAttributes = [NSAttributedString.Key:Any]()
     private static var kTextFinderAttributes = [NSAttributedString.Key:Any]()
+    private static var kFlagAttributes = [NSAttributedString.Key:Any]()
 
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         let colID = tableColumn!.identifier
@@ -130,31 +132,6 @@ extension LogDocument: NSTableViewDelegate {
         if let view = view as? NSTableCellView {
             let entry = _entries[row]
             if let textField = view.textField {
-                // Text:
-                switch colID.rawValue {
-                case "index":
-                    var str = String(entry.index + 1)
-                    if entry.flagged {
-                        str = "🚩 " + str
-                    }
-                    textField.stringValue = str
-                case "time":
-                    if textField.formatter == nil {
-                        textField.formatter = _dateFormatter
-                    }
-                    textField.objectValue = entry.date
-                case "domain":
-                    textField.objectValue = entry.domain?.name
-                case "object":
-                    setHighlightedString(entry.object, in: textField)
-                case "message":
-                    setHighlightedString(entry.message,
-                                         foundRanges: _entryFindHighlightRanges[entry],
-                                         in: textField)
-                default:
-                    textField.objectValue = nil
-                }
-
                 // Text color:
                 let color: NSColor?
                 switch entry.level {
@@ -171,6 +148,44 @@ extension LogDocument: NSTableViewDelegate {
                 if let font = textField.font {
                     let mask = entry.flagged ? NSFontTraitMask.boldFontMask : NSFontTraitMask.unboldFontMask
                     textField.font = NSFontManager.shared.convert(font, toHaveTrait: mask)
+                }
+
+                // Text:
+                switch colID.rawValue {
+                case "index":
+                    var str = String(entry.index + 1)
+                    let marker = (entry.flagMarker ?? "🚩 ")
+                    if entry.flagged {
+                        str = marker + str
+                    }
+                    textField.stringValue = str
+                    if entry.flagged {
+                        if LogDocument.kFlagAttributes.isEmpty {
+                            let bigFont = NSFont.systemFont(ofSize: 13)
+                            LogDocument.kFlagAttributes = [NSAttributedString.Key.font : bigFont,
+                                                           NSAttributedString.Key.baselineOffset : -3]
+                        }
+                        let astr = textField.attributedStringValue.mutableCopy() as! NSMutableAttributedString
+                        astr.addAttributes([NSAttributedString.Key.foregroundColor : NSColor.controlTextColor],
+                                           range: NSRange(0..<astr.string.count))
+                        astr.addAttributes(LogDocument.kFlagAttributes, range: NSRange(0..<marker.count))
+                        textField.attributedStringValue = astr
+                    }
+                case "time":
+                    if textField.formatter == nil {
+                        textField.formatter = _dateFormatter
+                    }
+                    textField.objectValue = entry.date
+                case "domain":
+                    textField.objectValue = entry.domain?.name
+                case "object":
+                    setHighlightedString(entry.object, in: textField)
+                case "message":
+                    setHighlightedString(entry.message,
+                                         foundRanges: _entryFindHighlightRanges[entry],
+                                         in: textField)
+                default:
+                    textField.objectValue = nil
                 }
             }
             if let imageView = view.imageView {
@@ -189,7 +204,13 @@ extension LogDocument: NSTableViewDelegate {
 
     func tableView(_ tableView: NSTableView, didAdd rowView: NSTableRowView, forRow row: Int) {
         let entry = _entries[row]
-        rowView.backgroundColor = entry.flagged ? NSColor.yellow : NSColor.clear
+        let color: NSColor
+        if entry.flagged {
+            color = NSColor.yellow
+        } else {
+            color = NSColor.controlAlternatingRowBackgroundColors[row % 2]
+        }
+        rowView.backgroundColor = color
     }
 
 
@@ -214,7 +235,7 @@ extension LogDocument: NSTableViewDelegate {
                     LogDocument.kTextFinderAttributes[NSAttributedString.Key.backgroundColor] = NSColor.orange
                 }
                 for range in foundRanges {
-                    astr.setAttributes(LogDocument.kTextFinderAttributes,
+                    astr.addAttributes(LogDocument.kTextFinderAttributes,
                                        range: NSRange(range))
                 }
             }
@@ -231,7 +252,7 @@ extension LogDocument: NSTableViewDelegate {
         var start = str.startIndex
         while let rMatch = str.range(of: substring, options: String.CompareOptions.caseInsensitive,
                                      range: (start ..< str.endIndex), locale: nil) {
-            astr.setAttributes(LogDocument.kTextMatchAttributes, range: NSRange(rMatch, in: str))
+            astr.addAttributes(LogDocument.kTextMatchAttributes, range: NSRange(rMatch, in: str))
             start = rMatch.upperBound
         }
     }

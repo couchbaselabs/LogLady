@@ -16,6 +16,10 @@ enum LogLevel : Int8 {
     case Info
     case Warning
     case Error
+
+    static func >= (lhs: LogLevel, rhs: LogLevel) -> Bool {
+        return lhs.rawValue >= rhs.rawValue
+    }
 }
 
 
@@ -97,6 +101,7 @@ class LogEntry {
     let sourceLine: Substring
 
     var flagged =   false
+    var flagMarker: String?
 
     func matches(_ filter: String) -> Bool {
         return message.localizedStandardContains(filter) || (object?.localizedStandardContains(filter) ?? false)

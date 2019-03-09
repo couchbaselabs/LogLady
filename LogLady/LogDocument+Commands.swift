@@ -24,18 +24,69 @@ extension LogDocument {
     }
 
 
-    ///// FLAGGING:
+    func selectNext(_ condition: (LogEntry)->Bool) {
+        var row = (_tableView.selectedRowIndexes.last ?? -1) + 1
+        for entry in _entries[row..<_entries.endIndex] {
+            if condition(entry) {
+                selectRow(row)
+                return
+            }
+            row += 1
+        }
+        NSSound.beep()
+    }
+
+    func selectPrev(_ condition: (LogEntry)->Bool) {
+        var row = (_tableView.selectedRowIndexes.first ?? _entries.count) - 1
+        for entry in _entries[0...row].reversed() {
+            if condition(entry) {
+                selectRow(row)
+                return
+            }
+            row -= 1
+        }
+        NSSound.beep()
+    }
+
+    func selectAll(_ condition: (LogEntry)->Bool) {
+        var selected = IndexSet()
+        var row = 0
+        for entry in _entries {
+            if condition(entry) {
+                selected.insert(row)
+            }
+            row += 1
+        }
+        if selected.isEmpty {
+            NSSound.beep()
+            return
+        }
+        _tableView.selectRowIndexes(selected, byExtendingSelection: false)
+        scrollSelectionIntoView()
+    }
+
+
+
+    ///// FLAGGING & SELECTING:
 
 
     @IBAction func flag(_ sender: AnyObject) {
-        let indexes = _tableView.selectedRowIndexes
         var state: Bool? = nil
+        if let menu = sender as? NSMenuItem {
+            if menu.title.count == 1 {
+                _flagMarker = menu.title + " "
+                state = true
+            }
+        }
+
+        let indexes = _tableView.selectedRowIndexes
         for row in indexes {
             let entry = _entries[row]
             if state == nil {
                 state = !entry.flagged
             }
             entry.flagged = state!
+            entry.flagMarker = state! ? _flagMarker : nil
             reloadRowBackground(row)
         }
         _tableView.reloadData(forRowIndexes: indexes,
@@ -44,46 +95,24 @@ extension LogDocument {
 
 
     @IBAction func selectAllFlags(_ sender: AnyObject) {
-        var flagged = IndexSet()
-        var row = 0
-        for entry in _entries {
-            if entry.flagged {
-                flagged.insert(row)
-            }
-            row += 1
-        }
-        if flagged.isEmpty {
-            NSSound.beep()
-            return
-        }
-        _tableView.selectRowIndexes(flagged, byExtendingSelection: false)
-        scrollSelectionIntoView()
+        selectAll {$0.flagged}
     }
-
 
     @IBAction func selectNextFlag(_ sender: AnyObject) {
-        var row = (_tableView.selectedRowIndexes.last ?? -1) + 1
-        for entry in _entries[row..<_entries.endIndex] {
-            if entry.flagged {
-                selectRow(row)
-                return
-            }
-            row += 1
-        }
-        NSSound.beep()
+        selectNext {$0.flagged}
+    }
+
+    @IBAction func selectPrevFlag(_ sender: AnyObject) {
+        selectPrev {$0.flagged}
     }
 
 
-    @IBAction func selectPrevFlag(_ sender: AnyObject) {
-        var row = (_tableView.selectedRowIndexes.first ?? _entries.count) - 1
-        for entry in _entries[0...row].reversed() {
-            if entry.flagged {
-                selectRow(row)
-                return
-            }
-            row -= 1
-        }
-        NSSound.beep()
+    @IBAction func selectNextWarning(_ sender: AnyObject) {
+        selectNext {$0.level >= LogLevel.Warning}
+    }
+
+    @IBAction func selectPrevWarning(_ sender: AnyObject) {
+        selectPrev {$0.level >= LogLevel.Warning}
     }
 
 
