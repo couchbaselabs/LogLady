@@ -53,27 +53,32 @@ struct LogFilter {
     var onlyMarked = false
     var minLevel: LogLevel = LogLevel.None
     var domains: Set<LogDomain?>? = nil
+    var object: Substring? = nil
     var string: String? = nil
 }
 
 
 class LogEntry {
-    init(index: Int, line: Substring, date: Date?, level: LogLevel, domain: LogDomain?, object: Substring?, message: Substring) {
+    init(index: Int, line: Substring, timestamp: Double?, level: LogLevel, domain: LogDomain?,
+         object: Substring?, message: Substring) {
         self.sourceLine = line
         self.index = index
-        if let date = date {
-            self.timestamp = date.timeIntervalSince1970
-        } else {
-            self.timestamp = 0
-        }
+        self.timestamp = timestamp ?? 0
         self.level = level
         self.domain = domain
         self.object = object
         self.message = message
     }
 
+    convenience init(index: Int, line: Substring, date: Date?, level: LogLevel, domain: LogDomain?,
+                     object: Substring?, message: Substring) {
+        self.init(index: index, line: line, timestamp: date?.timeIntervalSince1970, level: level,
+                  domain: domain, object: object, message: message)
+    }
+
     convenience init(index: Int, line: Substring) {
-        self.init(index: index, line: line, date: nil, level: LogLevel.None, domain: nil, object: nil, message: line)
+        self.init(index: index, line: line, date: nil, level: LogLevel.None, domain: nil,
+                  object: nil, message: line)
     }
 
     var date: Date? {
@@ -83,7 +88,7 @@ class LogEntry {
         return Date(timeIntervalSince1970: timestamp)
     }
 
-    let index:      Int
+    var index:      Int
     let timestamp:  Double
     let level:      LogLevel
     let domain:     LogDomain?
@@ -103,6 +108,8 @@ class LogEntry {
         } else if level.rawValue < filter.minLevel.rawValue {
             return false
         } else if let domains = filter.domains, !domains.contains(domain) {
+            return false
+        } else if let object = filter.object, object != self.object {
             return false
         } else if let str = filter.string, !matches(str) {
             return false

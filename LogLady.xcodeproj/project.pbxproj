@@ -23,6 +23,9 @@
 		275FA31922306D35001C392D /* flag-checkered.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 275FA31722306D34001C392D /* flag-checkered.pdf */; };
 		275FA31A22306D35001C392D /* flag.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 275FA31822306D35001C392D /* flag.pdf */; };
 		275FA31F2230AC51001C392D /* LogDocument+Commands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 275FA31E2230AC51001C392D /* LogDocument+Commands.swift */; };
+		275FA3272232FC6C001C392D /* LogDecoder.cc in Sources */ = {isa = PBXBuildFile; fileRef = 275FA3242232FC6C001C392D /* LogDecoder.cc */; };
+		275FA3312232FE8E001C392D /* LogDecoderGlue.mm in Sources */ = {isa = PBXBuildFile; fileRef = 275FA3302232FE8E001C392D /* LogDecoderGlue.mm */; };
+		275FA333223301F9001C392D /* LiteCoreLogParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 275FA332223301F9001C392D /* LiteCoreLogParser.swift */; };
 		27876DB12231E7760041ACBB /* LogDocument+Find.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27876DB02231E7760041ACBB /* LogDocument+Find.swift */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +62,15 @@
 		275FA31722306D34001C392D /* flag-checkered.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "flag-checkered.pdf"; sourceTree = "<group>"; };
 		275FA31822306D35001C392D /* flag.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = flag.pdf; sourceTree = "<group>"; };
 		275FA31E2230AC51001C392D /* LogDocument+Commands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogDocument+Commands.swift"; sourceTree = "<group>"; };
+		275FA3212232FC6B001C392D /* Log Lady-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Log Lady-Bridging-Header.h"; sourceTree = "<group>"; };
+		275FA3242232FC6C001C392D /* LogDecoder.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LogDecoder.cc; sourceTree = "<group>"; };
+		275FA3252232FC6C001C392D /* LogDecoder.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LogDecoder.hh; sourceTree = "<group>"; };
+		275FA3282232FC98001C392D /* forestdb_endian.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = forestdb_endian.h; sourceTree = "<group>"; };
+		275FA3292232FC98001C392D /* Endian.hh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Endian.hh; sourceTree = "<group>"; };
+		275FA32E2232FD22001C392D /* Base.hh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Base.hh; sourceTree = "<group>"; };
+		275FA32F2232FE8E001C392D /* LogDecoderGlue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LogDecoderGlue.h; sourceTree = "<group>"; };
+		275FA3302232FE8E001C392D /* LogDecoderGlue.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LogDecoderGlue.mm; sourceTree = "<group>"; };
+		275FA332223301F9001C392D /* LiteCoreLogParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiteCoreLogParser.swift; sourceTree = "<group>"; };
 		27876DB02231E7760041ACBB /* LogDocument+Find.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogDocument+Find.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -112,6 +124,8 @@
 				275FA2E2222F0AFF001C392D /* MainMenu.xib */,
 				275FA2E5222F0AFF001C392D /* Info.plist */,
 				275FA2E6222F0AFF001C392D /* LogLady.entitlements */,
+				275FA3212232FC6B001C392D /* Log Lady-Bridging-Header.h */,
+				275FA3202232FC40001C392D /* LiteCore Binary Logs */,
 				275FA30C22306A86001C392D /* Icons */,
 			);
 			path = LogLady;
@@ -131,6 +145,7 @@
 			children = (
 				275FA2FA222F0D41001C392D /* LogEntry.swift */,
 				275FA2FC222F10B9001C392D /* LogParser.swift */,
+				275FA332223301F9001C392D /* LiteCoreLogParser.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -147,6 +162,20 @@
 				275FA30D22306A91001C392D /* stethoscope.pdf */,
 			);
 			path = Icons;
+			sourceTree = "<group>";
+		};
+		275FA3202232FC40001C392D /* LiteCore Binary Logs */ = {
+			isa = PBXGroup;
+			children = (
+				275FA3242232FC6C001C392D /* LogDecoder.cc */,
+				275FA3252232FC6C001C392D /* LogDecoder.hh */,
+				275FA32F2232FE8E001C392D /* LogDecoderGlue.h */,
+				275FA3302232FE8E001C392D /* LogDecoderGlue.mm */,
+				275FA32E2232FD22001C392D /* Base.hh */,
+				275FA3292232FC98001C392D /* Endian.hh */,
+				275FA3282232FC98001C392D /* forestdb_endian.h */,
+			);
+			path = "LiteCore Binary Logs";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,6 +228,7 @@
 				TargetAttributes = {
 					275FA2D5222F0AFD001C392D = {
 						CreatedOnToolsVersion = 10.2;
+						LastSwiftMigration = 1020;
 					};
 					275FA2EA222F0AFF001C392D = {
 						CreatedOnToolsVersion = 10.2;
@@ -258,6 +288,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				275FA2DC222F0AFD001C392D /* LogDocument.swift in Sources */,
+				275FA3272232FC6C001C392D /* LogDecoder.cc in Sources */,
+				275FA3312232FE8E001C392D /* LogDecoderGlue.mm in Sources */,
+				275FA333223301F9001C392D /* LiteCoreLogParser.swift in Sources */,
 				275FA31F2230AC51001C392D /* LogDocument+Commands.swift in Sources */,
 				275FA2DA222F0AFD001C392D /* AppDelegate.swift in Sources */,
 				275FA2FD222F10B9001C392D /* LogParser.swift in Sources */,
@@ -423,6 +456,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = LogLady/LogLady.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -435,6 +469,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.couchbase.LogLady;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "LogLady/Log Lady-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -443,6 +479,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = LogLady/LogLady.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -455,6 +492,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.couchbase.LogLady;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "LogLady/Log Lady-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;

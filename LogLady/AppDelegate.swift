@@ -23,5 +23,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
 
+    @IBAction func openLogDirectory(_ sender: AnyObject) {
+        let panel = NSOpenPanel()
+        panel.canChooseDirectories = true
+        panel.allowedFileTypes = ["public.directory"]
+        if panel.runModal() == NSApplication.ModalResponse.cancel {
+            return
+        }
+        guard let dir = panel.urls.first else {
+            return
+        }
+
+        let doc = try! LogDocument(contentsOf: dir, ofType: "public.folder")
+        NSDocumentController.shared.addDocument(doc)
+        doc.makeWindowControllers()
+        doc.showWindows()
+    }
+
 }
 

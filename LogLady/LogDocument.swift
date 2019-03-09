@@ -49,12 +49,16 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
 
 
     override func read(from url: URL, ofType typeName: String) throws {
-        let data = try String(contentsOf: url, encoding: .utf8)
-
-        do {
-            _allEntries = try CocoaLogParser().parse(data)
-        } catch {
-            _allEntries = try LiteCoreLogParser().parse(data)
+        if url.hasDirectoryPath || typeName == "public.folder" {
+            _allEntries = try LiteCoreBinaryLogParser().parseDirectory(dir: url)
+        } else if url.pathExtension == "cbllog" {
+            _allEntries = try LiteCoreBinaryLogParser().parse(url)
+        } else {
+            do {
+                _allEntries = try CocoaLogParser().parse(url)
+            } catch {
+                _allEntries = try LiteCoreLogParser().parse(url)
+            }
         }
         _entries = _allEntries
         _filterRange = 0 ..< _allEntries.endIndex

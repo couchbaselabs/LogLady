@@ -10,7 +10,7 @@ import Foundation
 
 
 protocol LogParser {
-    func parse(_ data: String) throws -> [LogEntry]
+    func parse(_: URL) throws -> [LogEntry]
 }
 
 
@@ -42,7 +42,11 @@ class TextLogParser : LogParser {
         self.dateFormatter = dateFormat
     }
 
-    func parse(_ data: String) throws -> [LogEntry] {
+    func parse(_ url: URL) throws -> [LogEntry] {
+        return try parse(data: try String(contentsOf: url, encoding: .utf8))
+    }
+
+    func parse(data: String) throws -> [LogEntry] {
         self.index = 0
         var messages = [LogEntry]()
         var matched = false

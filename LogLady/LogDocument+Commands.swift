@@ -145,7 +145,19 @@ extension LogDocument {
 
 
     @IBAction func toggleFocusObject(_ sender: AnyObject) {
-
+        if _filter.object == nil {
+            guard let row = _tableView.selectedRowIndexes.first else {
+                return
+            }
+            let entry = _entries[row]
+            if let object = entry.object {
+                _filter.object = Substring(object)
+                updateFilter()
+            }
+        } else {
+            _filter.object = nil
+            updateFilter()
+        }
     }
 
 
@@ -221,8 +233,11 @@ extension LogDocument {
         #selector(hideRowsBefore(_:)), #selector(hideRowsAfter(_:)):
             return _tableView.selectedRow >= 0
         case #selector(toggleHideUnmarked(_:)):
-            (item as? NSMenuItem)?.state = (_filter.onlyMarked ? NSControl.StateValue.on : NSControl.StateValue.off)
+            checkMenuItem(item, checked: _filter.onlyMarked)
             return true
+        case #selector(toggleFocusObject(_:)):
+            checkMenuItem(item, checked: _filter.object != nil)
+            return _filter.object != nil || _tableView.selectedRow >= 0
         case #selector(performTextFinderAction(_:)):
             NSLog("validate TextFinder action \(item.tag)")
             return _textFinder.validateAction(NSTextFinder.Action(rawValue: item.tag)!)
@@ -231,5 +246,10 @@ extension LogDocument {
         }
     }
 
+    private func checkMenuItem(_ item: NSValidatedUserInterfaceItem, checked: Bool) {
+        if let item = (item as? NSMenuItem) {
+            item.state = (checked ? NSControl.StateValue.on : NSControl.StateValue.off)
+        }
+    }
 
 }
