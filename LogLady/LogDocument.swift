@@ -50,17 +50,19 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
 
 
     override func read(from url: URL, ofType typeName: String) throws {
+        let entries : [LogEntry]?
         if url.hasDirectoryPath || typeName == "public.folder" {
-            _allEntries = try LiteCoreBinaryLogParser().parseDirectory(dir: url)
+            entries = try LiteCoreBinaryLogParser().parseDirectory(dir: url)
         } else if url.pathExtension == "cbllog" {
-            _allEntries = try LiteCoreBinaryLogParser().parse(url)
+            entries = try LiteCoreBinaryLogParser().parse(url)
         } else {
-            do {
-                _allEntries = try CocoaLogParser().parse(url)
-            } catch {
-                _allEntries = try LiteCoreLogParser().parse(url)
-            }
+            entries = try CocoaLogParser().parse(url) ?? LiteCoreLogParser().parse(url)
         }
+        guard let gotEntries = entries else {
+            throw NSError(domain: "LogLady", code: -1,
+                          userInfo: [NSLocalizedDescriptionKey: "Unrecognized log type"])
+        }
+        _allEntries = gotEntries
         _entries = _allEntries
         _filterRange = 0 ..< _allEntries.endIndex
         _entryTextPos = nil

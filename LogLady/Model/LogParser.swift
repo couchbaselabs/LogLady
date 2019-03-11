@@ -10,7 +10,7 @@ import Foundation
 
 
 protocol LogParser {
-    func parse(_: URL) throws -> [LogEntry]
+    func parse(_: URL) throws -> [LogEntry]?
 }
 
 
@@ -42,11 +42,11 @@ class TextLogParser : LogParser {
         self.dateFormatter = dateFormat
     }
 
-    func parse(_ url: URL) throws -> [LogEntry] {
-        return try parse(data: try String(contentsOf: url, encoding: .utf8))
+    func parse(_ url: URL) throws -> [LogEntry]? {
+        return parse(data: try String(contentsOf: url, encoding: .utf8))
     }
 
-    func parse(data: String) throws -> [LogEntry] {
+    func parse(data: String) -> [LogEntry]? {
         self.index = 0
         var messages = [LogEntry]()
         var matched = false
@@ -67,9 +67,11 @@ class TextLogParser : LogParser {
             if entry.timestamp > 0 {
                 matched = true
             } else if !matched && self.index > 100 {
-                throw NSError(domain: "LogLady", code: 1,
-                              userInfo: [NSLocalizedDescriptionKey: "Wrong file format"])
+                break
             }
+        }
+        if !matched {
+            return nil
         }
         return messages
     }

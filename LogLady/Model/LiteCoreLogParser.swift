@@ -11,10 +11,10 @@ import Foundation
 
 class LiteCoreBinaryLogParser : LogParser {
 
-    func parseDirectory(dir: URL) throws -> [LogEntry] {
+    func parseDirectory(dir: URL) throws -> [LogEntry]? {
         let files = try FileManager.default.contentsOfDirectory(atPath: dir.path)
         var entries = try files.flatMap { (item) in
-            return try parse(dir.appendingPathComponent(item))
+            return try parse(dir.appendingPathComponent(item))!
         }
         entries = entries.sorted(by: { $0.timestamp < $1.timestamp })
         var i = 0
@@ -25,7 +25,7 @@ class LiteCoreBinaryLogParser : LogParser {
         return entries
     }
 
-    func parse(_ url: URL) throws -> [LogEntry] {
+    func parse(_ url: URL) throws -> [LogEntry]? {
         return try parse(filePath: url.path)
     }
 
