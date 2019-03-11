@@ -31,13 +31,14 @@ extension LogDocument : NSTextFinderClient {
     }
 
     var isSelectable: Bool            { return true }
-    var allowsMultipleSelection: Bool { return false }
+    var allowsMultipleSelection: Bool { return true }
     var isEditable: Bool              { return false }
 
 
     @IBAction func performTextFinderAction(_ sender: AnyObject?) {
-        if let button = sender as? NSValidatedUserInterfaceItem {
-            _textFinder.performAction(NSTextFinder.Action(rawValue: button.tag)!)
+        if let item = sender as? NSValidatedUserInterfaceItem {
+            NSLog("----- TextFinder action \(item.tag) for '\(item.action)'")
+            _textFinder.performAction(NSTextFinder.Action(rawValue: item.tag)!)
         }
     }
 
@@ -67,9 +68,28 @@ extension LogDocument : NSTextFinderClient {
             sel.location += startCharOfMessage(row)
             return sel
         } else if let row = _tableView.selectedRowIndexes.first {
-            return NSRange(location: startCharOfMessage(row), length: 0)
+            return NSRange(charRangeOfMessage(row))
         } else {
             return NSRange(location: 0, length: 0)
+        }
+    }
+
+
+    var selectedRanges: [NSValue] {
+        get {
+            let r = self.firstSelectedRange
+            NSLog("selectedRanges -> [\(r)]")
+            return (r.length > 0) ? [NSValue(range: r)] : []
+        }
+        set {
+            NSLog("setSelectedRanges: \(newValue)")
+            var rows = IndexSet()
+            for textRange in newValue {
+                if let (_, _, row) = entry(atCharacterIndex: textRange.rangeValue.lowerBound) {
+                    rows.insert(row)
+                }
+            }
+            _tableView.selectRowIndexes(rows, byExtendingSelection: false)
         }
     }
 

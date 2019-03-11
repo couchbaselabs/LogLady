@@ -182,38 +182,6 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="tNI-1B-fV5"/>
-                            <menuItem title="Find" id="4EN-yA-p0u">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Find" id="1b7-l0-nxx">
-                                    <items>
-                                        <menuItem title="Find…" tag="1" keyEquivalent="f" id="Xz5-n4-O0W">
-                                            <connections>
-                                                <action selector="performTextFinderAction:" target="-1" id="Oav-cL-nnd"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Find Next" tag="2" keyEquivalent="g" id="q09-fT-Sye">
-                                            <connections>
-                                                <action selector="performTextFinderAction:" target="-1" id="o6A-qf-Upr"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Find Previous" tag="3" keyEquivalent="G" id="OwM-mh-QMV">
-                                            <connections>
-                                                <action selector="performTextFinderAction:" target="-1" id="YhL-kx-mPh"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Use Selection for Find" tag="7" keyEquivalent="e" id="buJ-ug-pKt">
-                                            <connections>
-                                                <action selector="performTextFinderAction:" target="-1" id="bvq-8a-qAo"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Jump to Selection" keyEquivalent="j" id="S0p-oC-mLd">
-                                            <connections>
-                                                <action selector="scrollSelectionToVisible:" target="-1" id="iaw-ff-zUi"/>
-                                            </connections>
-                                        </menuItem>
-                                    </items>
-                                </menu>
-                            </menuItem>
                             <menuItem title="Speech" id="xrE-MZ-jX0">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Speech" id="3rS-ZA-NoH">
@@ -232,6 +200,45 @@
                                         </menuItem>
                                     </items>
                                 </menu>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="Find" id="BOC-pa-y8u">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Find" id="BXz-ZR-Bcb">
+                        <items>
+                            <menuItem title="Find…" tag="1" keyEquivalent="f" id="3iQ-ae-eeX">
+                                <connections>
+                                    <action selector="performTextFinderAction:" target="-1" id="qmU-2f-BD9"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Find Next" tag="2" keyEquivalent="g" id="Oye-Ug-pEM">
+                                <connections>
+                                    <action selector="performTextFinderAction:" target="-1" id="qWs-GA-oX8"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Find Previous" tag="3" keyEquivalent="G" id="ezn-Mt-PiS">
+                                <connections>
+                                    <action selector="performTextFinderAction:" target="-1" id="GhT-1N-NET"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Find All" tag="9" id="MpR-6R-iop">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="performTextFinderAction:" target="-1" id="Tux-ua-c0Q"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Use Selection for Find" tag="7" keyEquivalent="e" id="J4D-dh-LeJ">
+                                <connections>
+                                    <action selector="performTextFinderAction:" target="-1" id="y71-oH-t0y"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="OQJ-8a-lNX"/>
+                            <menuItem title="Jump to Selection" keyEquivalent="j" id="AKm-d5-W2Q">
+                                <connections>
+                                    <action selector="jumpToSelection:" target="-1" id="Gwh-ng-DFZ"/>
+                                </connections>
                             </menuItem>
                         </items>
                     </menu>

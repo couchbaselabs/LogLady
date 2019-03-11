@@ -128,6 +128,8 @@ extension LogDocument: NSTableViewDelegate {
     private static var kTextFinderAttributes = [NSAttributedString.Key:Any]()
     private static var kFlagAttributes = [NSAttributedString.Key:Any]()
 
+
+    // Set up table cell views:
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         let colID = tableColumn!.identifier
         let view = tableView.makeView(withIdentifier: colID, owner: self)
@@ -204,6 +206,7 @@ extension LogDocument: NSTableViewDelegate {
     }
 
 
+    // Customize row background:
     func tableView(_ tableView: NSTableView, didAdd rowView: NSTableRowView, forRow row: Int) {
         let entry = _entries[row]
         let color: NSColor
@@ -216,6 +219,7 @@ extension LogDocument: NSTableViewDelegate {
     }
 
 
+    // Make the message column selectable:
     func tableView(_ tableView: NSTableView, shouldEdit tableColumn: NSTableColumn?, row: Int) -> Bool {
         return tableColumn != nil && tableColumn!.identifier.rawValue == "message"
     }

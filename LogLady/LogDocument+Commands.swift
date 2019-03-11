@@ -116,6 +116,11 @@ extension LogDocument {
     }
 
 
+    @IBAction func jumpToSelection(_ sender: AnyObject) {
+        scrollSelectionIntoView()
+    }
+
+
     ///// FILTERING:
 
 
@@ -258,8 +263,12 @@ extension LogDocument {
 
     override func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
         switch item.action {
-        case #selector(copy(_:)), #selector(flag(_:)), #selector(filterToSelectedRows(_:)),
-        #selector(hideRowsBefore(_:)), #selector(hideRowsAfter(_:)):
+        case #selector(copy(_:)),
+             #selector(flag(_:)),
+             #selector(filterToSelectedRows(_:)),
+             #selector(jumpToSelection(_:)),
+             #selector(hideRowsBefore(_:)),
+             #selector(hideRowsAfter(_:)):
             return _tableView.selectedRow >= 0
         case #selector(toggleHideUnmarked(_:)):
             checkMenuItem(item, checked: _filter.onlyMarked)
@@ -268,7 +277,6 @@ extension LogDocument {
             checkMenuItem(item, checked: _filter.object != nil)
             return _filter.object != nil || _tableView.selectedRow >= 0
         case #selector(performTextFinderAction(_:)):
-            NSLog("validate TextFinder action \(item.tag)")
             return _textFinder.validateAction(NSTextFinder.Action(rawValue: item.tag)!)
         default:
             return super.validateUserInterfaceItem(item)
