@@ -1,9 +1,11 @@
 # Log Lady — a Couchbase Lite log viewer
 
-Log files are a great debugging and diagnostic tool, but they're difficult to work with. They get extremely long, and interesting events may be hundreds or thousands of lines apart. **Log Lady* is a specialized viewer for log files.
+Log files are a great debugging and diagnostic tool, but they're difficult to work with. They get extremely long, and interesting events may be hundreds or thousands of lines apart. **Log Lady** is a specialized viewer for log files.
+
+<img src="screenshot.jpg" width="699">
 
 * Parses log files into organized table views
-  * Scales to very long files
+  * Doesn't grind to a halt on large files
   * Can directly read binary log files
 * Can filter to lines matching specific text, priority (verbose / info / warning...), category, or even a single object
 * Highlights warnings, errors and debug-only messages
