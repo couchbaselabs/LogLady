@@ -8,8 +8,8 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="LogDocument">
             <connections>
-                <outlet property="_dateFormatter" destination="DZ4-x3-mqy" id="lIJ-tA-x8V"/>
                 <outlet property="_domainFilter" destination="vQk-S2-8rB" id="yX9-zO-BdP"/>
+                <outlet property="_levelFilter" destination="YaA-yR-9bH" id="iOg-nP-ypn"/>
                 <outlet property="_tableView" destination="vvY-KH-z3l" id="Vuv-Ac-l2P"/>
                 <outlet property="_textFinder" destination="2AF-hU-Voh" id="1CD-dj-nqU"/>
                 <outlet property="window" destination="xOd-HO-29H" id="JIz-fz-R2o"/>
@@ -244,6 +244,7 @@
                                         </tableColumn>
                                     </tableColumns>
                                     <connections>
+                                        <action trigger="doubleAction" selector="flag:" target="-2" id="qMZ-Vf-iny"/>
                                         <outlet property="dataSource" destination="-2" id="DMo-u9-nuN"/>
                                         <outlet property="delegate" destination="-2" id="R9T-eT-dBC"/>
                                     </connections>
@@ -362,7 +363,6 @@
             </connections>
             <point key="canvasLocation" x="226.5" y="-20.5"/>
         </window>
-        <dateFormatter formatterBehavior="custom10_4" timeStyle="short" dateFormat="hh:mm:ss.SSSSSS" id="DZ4-x3-mqy"/>
         <textFinder id="2AF-hU-Voh">
             <connections>
                 <outlet property="client" destination="-2" id="eHS-ok-sUS"/>

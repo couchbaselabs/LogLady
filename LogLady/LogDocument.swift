@@ -11,8 +11,8 @@ import Cocoa
 class LogDocument: NSDocument, NSSearchFieldDelegate {
 
     @IBOutlet internal weak var _tableView : NSTableView!
-    @IBOutlet internal weak var _dateFormatter : Formatter!
     @IBOutlet internal weak var _domainFilter : NSPopUpButton!
+    @IBOutlet internal weak var _levelFilter : NSPopUpButton!
     @IBOutlet internal weak var _textFinder : NSTextFinder!
 
     internal var _allEntries = [LogEntry]()
@@ -30,12 +30,6 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
 
     override init() {
         super.init()
-
-        LogDocument.kLevelImages[Int(LogLevel.Debug.rawValue)] = NSImage(named: "stethoscope.pdf")
-//        LogDocument.kLevelImages[Int(LogLevel.Verbose.rawValue)] = NSImage(named: "comment.pdf")
-//        LogDocument.kLevelImages[Int(LogLevel.Info.rawValue)] = NSImage(named: "info.pdf")
-        LogDocument.kLevelImages[Int(LogLevel.Warning.rawValue)] = NSImage(named: "exclamation-triangle.pdf")
-        LogDocument.kLevelImages[Int(LogLevel.Error.rawValue)] = NSImage(named: "skull.pdf")
     }
 
 
@@ -44,25 +38,8 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
     }
 
 
-    override var windowNibName: NSNib.Name? {
-        return NSNib.Name("Document")
-    }
-
-
     override func read(from url: URL, ofType typeName: String) throws {
-        let entries : [LogEntry]?
-        if url.hasDirectoryPath || typeName == "public.folder" {
-            entries = try LiteCoreBinaryLogParser().parseDirectory(dir: url)
-        } else if url.pathExtension == "cbllog" {
-            entries = try LiteCoreBinaryLogParser().parse(url)
-        } else {
-            entries = try CocoaLogParser().parse(url) ?? LiteCoreLogParser().parse(url)
-        }
-        guard let gotEntries = entries else {
-            throw NSError(domain: "LogLady", code: -1,
-                          userInfo: [NSLocalizedDescriptionKey: "Unrecognized log type"])
-        }
-        _allEntries = gotEntries
+        _allEntries = try ParseLogFile(url)
         _entries = _allEntries
         _filterRange = 0 ..< _allEntries.endIndex
         _entryTextPos = nil
@@ -70,18 +47,57 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
     }
 
 
+    func addFiles(_ urls: [URL]) throws {
+        var merged = _allEntries
+        for url in urls {
+            merged.append(contentsOf: try ParseLogFile(url))
+        }
+        merged.sort(by: { $0.timestamp < $1.timestamp })
+        var i = 0
+        for e in merged {
+            e.index = i
+            i += 1
+        }
+        _allEntries = merged
+        _entries = merged
+    }
+
+
+    override var windowNibName: NSNib.Name? {
+        return NSNib.Name("Document")
+    }
+
+
     override func windowControllerDidLoadNib(_ windowController: NSWindowController) {
         // Initialize domains pop-up:
+        var levelCounts = [0, 0, 0, 0, 0, 0]
         var domains = Set<LogDomain>()
         for e in _allEntries {
             if let domain = e.domain {
                 domains.insert(domain)
             }
+            levelCounts[Int(e.level.rawValue)] += 1
         }
+
         for name in (domains.map{$0.name}.sorted()) {
             _domainFilter.addItem(withTitle: name)
         }
-        
+
+        _levelFilter.autoenablesItems = false
+        for item in _levelFilter.itemArray {
+            if item.tag > 0 {
+                var count = levelCounts[item.tag]
+                if count == 0 {
+                    item.isEnabled = false
+                } else if item.tag >= LogLevel.Warning.rawValue {
+                    if item.tag == LogLevel.Warning.rawValue {
+                        count += levelCounts[Int(LogLevel.Error.rawValue)]
+                    }
+                    item.title +=  " (\(count))"
+                }
+            }
+        }
+
         setupTextFinder()
     }
 
@@ -113,6 +129,16 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
 //////// TABLE VIEW:
 
 
+struct Col {
+    static let Index   = NSUserInterfaceItemIdentifier("index")
+    static let Time    = NSUserInterfaceItemIdentifier("time")
+    static let Level   = NSUserInterfaceItemIdentifier("level")
+    static let Domain  = NSUserInterfaceItemIdentifier("domain")
+    static let Object  = NSUserInterfaceItemIdentifier("object")
+    static let Message = NSUserInterfaceItemIdentifier("message")
+}
+
+
 extension LogDocument: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
         return _entries.count
@@ -121,13 +147,53 @@ extension LogDocument: NSTableViewDataSource {
 
 
 extension LogDocument: NSTableViewDelegate {
+    typealias TextAttributes = [NSAttributedString.Key:Any]
+
+    private static var kDateFont: NSFont {
+        // Set font attributes to use lining figures (monospaced digits) for time column:
+        let baseFont = NSFont.systemFont(ofSize: NSFont.smallSystemFontSize, weight: .light)
+        let descriptor = baseFont.fontDescriptor.addingAttributes([
+            NSFontDescriptor.AttributeName.featureSettings: [
+                [NSFontDescriptor.FeatureKey.typeIdentifier: kNumberSpacingType,
+                 NSFontDescriptor.FeatureKey.selectorIdentifier: kMonospacedNumbersSelector]
+            ],
+            ])
+        return NSFont(descriptor: descriptor, size: baseFont.pointSize)!
+    }
+
+    private static var kFlagFont: NSFont {
+        return NSFontManager.shared.convert(kDateFont, toSize: kDateFont.pointSize + 2)
+    }
+
+    private static var kDateFormatter : DateFormatter {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "hh:mm:ss"
+        return formatter
+    }
+
     private static let kLevelNames = ["", "debug", "verbose", "", "Warning", "Error"]
-    private static var kLevelImages: [NSImage?] = [nil, nil, nil, nil, nil, nil]
 
-    private static var kTextMatchAttributes = [NSAttributedString.Key:Any]()
-    private static var kTextFinderAttributes = [NSAttributedString.Key:Any]()
-    private static var kFlagAttributes = [NSAttributedString.Key:Any]()
+    private static var kLevelImages: [NSImage?] {
+        var images: [NSImage?] = [nil, nil, nil, nil, nil, nil]
+        images[Int(LogLevel.Debug.rawValue)] = NSImage(named: "stethoscope.pdf")
+//        images[Int(LogLevel.Verbose.rawValue)] = NSImage(named: "comment.pdf")
+//        images[Int(LogLevel.Info.rawValue)] = NSImage(named: "info.pdf")
+        images[Int(LogLevel.Warning.rawValue)] = NSImage(named: "exclamation-triangle.pdf")
+        images[Int(LogLevel.Error.rawValue)] = NSImage(named: "skull.pdf")
+        return images
+    }
 
+    private static let kTextMatchAttributes: TextAttributes = [
+        .backgroundColor : NSColor.yellow]
+    private static let kTextFinderAttributes: TextAttributes = [
+        .backgroundColor : NSColor.orange]
+    private static let kFlagAttributes: TextAttributes = [
+        .font : kFlagFont,
+        .baselineOffset : -3]
+
+    private static let kWarningErrorColor = NSColor(calibratedRed: 0.7, green: 0, blue: 0, alpha: 1)
+    private static let kFlaggedRowBGColor = NSColor(calibratedHue: 0.33, saturation: 0.2, brightness: 1.0, alpha: 1.0)
 
     // Set up table cell views:
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
@@ -139,9 +205,9 @@ extension LogDocument: NSTableViewDelegate {
                 // Text color:
                 let color: NSColor?
                 switch entry.level {
-                case LogLevel.None, LogLevel.Verbose, LogLevel.Debug:
+                case .None, .Verbose, .Debug:
                     color = NSColor.disabledControlTextColor
-                case LogLevel.Warning, LogLevel.Error:
+                case .Warning, .Error:
                     color = NSColor(red: 0.7, green: 0, blue: 0, alpha: 1)
                 default:
                     color = NSColor.controlTextColor
@@ -149,42 +215,38 @@ extension LogDocument: NSTableViewDelegate {
                 textField.textColor = color
 
                 // Font:
-                if let font = textField.font {
-                    let mask = entry.flagged ? NSFontTraitMask.boldFontMask : NSFontTraitMask.unboldFontMask
+                if colID == Col.Index || colID == Col.Time {
+                    textField.font = LogDocument.kDateFont
+                } else if let font = textField.font {
+                    let mask: NSFontTraitMask = entry.flagged ? .boldFontMask : .unboldFontMask
                     textField.font = NSFontManager.shared.convert(font, toHaveTrait: mask)
                 }
 
                 // Text:
-                switch colID.rawValue {
-                case "index":
-                    var str = String(entry.index + 1)
-                    let marker = (entry.flagMarker ?? "🚩 ")
+                switch colID {
+                case Col.Index:
+                    textField.stringValue = String(entry.index + 1)
                     if entry.flagged {
-                        str = marker + str
-                    }
-                    textField.stringValue = str
-                    if entry.flagged {
-                        if LogDocument.kFlagAttributes.isEmpty {
-                            let bigFont = NSFont.systemFont(ofSize: 13)
-                            LogDocument.kFlagAttributes = [NSAttributedString.Key.font : bigFont,
-                                                           NSAttributedString.Key.baselineOffset : -3]
-                        }
+                        let marker = (entry.flagMarker ?? "🚩 ")
                         let astr = textField.attributedStringValue.mutableCopy() as! NSMutableAttributedString
-                        astr.addAttributes([NSAttributedString.Key.foregroundColor : NSColor.controlTextColor],
+                        astr.addAttributes([.foregroundColor : NSColor.controlTextColor],
                                            range: NSRange(0..<astr.string.count))
+                        astr.replaceCharacters(in: NSRange(0..<0), with: marker)
                         astr.addAttributes(LogDocument.kFlagAttributes, range: NSRange(0..<marker.count))
                         textField.attributedStringValue = astr
                     }
-                case "time":
-                    if textField.formatter == nil {
-                        textField.formatter = _dateFormatter
+                case Col.Time:
+                    if let date = entry.date {
+                        let usec = Int64(entry.timestamp * 1e6) % 1000000
+                        textField.stringValue = LogDocument.kDateFormatter.string(from: date).appendingFormat(".%06d", usec)
+                    } else {
+                        textField.stringValue = ""
                     }
-                    textField.objectValue = entry.date
-                case "domain":
+                case Col.Domain:
                     textField.objectValue = entry.domain?.name
-                case "object":
+                case Col.Object:
                     setHighlightedString(entry.object, in: textField)
-                case "message":
+                case Col.Message:
                     setHighlightedString(entry.message,
                                          foundRanges: _entryFindHighlightRanges[entry],
                                          in: textField)
@@ -193,8 +255,8 @@ extension LogDocument: NSTableViewDelegate {
                 }
             }
             if let imageView = view.imageView {
-                switch colID.rawValue {
-                case "level":
+                switch colID {
+                case Col.Level:
                     // Level icon:
                     imageView.image = LogDocument.kLevelImages[Int(entry.level.rawValue)]
                 default:
@@ -211,7 +273,7 @@ extension LogDocument: NSTableViewDelegate {
         let entry = _entries[row]
         let color: NSColor
         if entry.flagged {
-            color = NSColor.yellow
+            color = LogDocument.kFlaggedRowBGColor
         } else {
             color = NSColor.controlAlternatingRowBackgroundColors[row % 2]
         }
@@ -221,7 +283,7 @@ extension LogDocument: NSTableViewDelegate {
 
     // Make the message column selectable:
     func tableView(_ tableView: NSTableView, shouldEdit tableColumn: NSTableColumn?, row: Int) -> Bool {
-        return tableColumn != nil && tableColumn!.identifier.rawValue == "message"
+        return tableColumn != nil && tableColumn!.identifier == Col.Message
     }
 
 
@@ -237,9 +299,6 @@ extension LogDocument: NSTableViewDelegate {
                 highlight(substring: match, in: astr)
             }
             if let foundRanges = foundRanges {
-                if LogDocument.kTextFinderAttributes.isEmpty {
-                    LogDocument.kTextFinderAttributes[NSAttributedString.Key.backgroundColor] = NSColor.orange
-                }
                 for range in foundRanges {
                     astr.addAttributes(LogDocument.kTextFinderAttributes,
                                        range: NSRange(range))
@@ -252,11 +311,8 @@ extension LogDocument: NSTableViewDelegate {
 
     private func highlight(substring: String, in astr: NSMutableAttributedString) {
         let str = astr.string
-        if LogDocument.kTextMatchAttributes.isEmpty {
-            LogDocument.kTextMatchAttributes[NSAttributedString.Key.backgroundColor] = NSColor.yellow
-        }
         var start = str.startIndex
-        while let rMatch = str.range(of: substring, options: String.CompareOptions.caseInsensitive,
+        while let rMatch = str.range(of: substring, options: .caseInsensitive,
                                      range: (start ..< str.endIndex), locale: nil) {
             astr.addAttributes(LogDocument.kTextMatchAttributes, range: NSRange(rMatch, in: str))
             start = rMatch.upperBound

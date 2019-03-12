@@ -26,6 +26,7 @@
 		275FA3272232FC6C001C392D /* LogDecoder.cc in Sources */ = {isa = PBXBuildFile; fileRef = 275FA3242232FC6C001C392D /* LogDecoder.cc */; };
 		275FA3312232FE8E001C392D /* LogDecoderGlue.mm in Sources */ = {isa = PBXBuildFile; fileRef = 275FA3302232FE8E001C392D /* LogDecoderGlue.mm */; };
 		275FA333223301F9001C392D /* LiteCoreLogParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 275FA332223301F9001C392D /* LiteCoreLogParser.swift */; };
+		275FA34622384365001C392D /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 275FA34522384365001C392D /* Credits.rtf */; };
 		27876DB12231E7760041ACBB /* LogDocument+Find.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27876DB02231E7760041ACBB /* LogDocument+Find.swift */; };
 /* End PBXBuildFile section */
 
@@ -71,6 +72,7 @@
 		275FA32F2232FE8E001C392D /* LogDecoderGlue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LogDecoderGlue.h; sourceTree = "<group>"; };
 		275FA3302232FE8E001C392D /* LogDecoderGlue.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LogDecoderGlue.mm; sourceTree = "<group>"; };
 		275FA332223301F9001C392D /* LiteCoreLogParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiteCoreLogParser.swift; sourceTree = "<group>"; };
+		275FA34522384365001C392D /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		27876DB02231E7760041ACBB /* LogDocument+Find.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogDocument+Find.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -123,6 +125,7 @@
 				275FA2E0222F0AFF001C392D /* Assets.xcassets */,
 				275FA2E2222F0AFF001C392D /* MainMenu.xib */,
 				275FA2E5222F0AFF001C392D /* Info.plist */,
+				275FA34522384365001C392D /* Credits.rtf */,
 				275FA2E6222F0AFF001C392D /* LogLady.entitlements */,
 				275FA3212232FC6B001C392D /* Log Lady-Bridging-Header.h */,
 				275FA3202232FC40001C392D /* LiteCore Binary Logs */,
@@ -268,6 +271,7 @@
 				275FA2E1222F0AFF001C392D /* Assets.xcassets in Resources */,
 				275FA2DF222F0AFD001C392D /* Document.xib in Resources */,
 				275FA31522306A92001C392D /* info.pdf in Resources */,
+				275FA34622384365001C392D /* Credits.rtf in Resources */,
 				275FA31622306A92001C392D /* comment.pdf in Resources */,
 				275FA2E4222F0AFF001C392D /* MainMenu.xib in Resources */,
 			);

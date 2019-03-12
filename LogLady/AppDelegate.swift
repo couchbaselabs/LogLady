@@ -25,19 +25,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBAction func openLogDirectory(_ sender: AnyObject) {
         let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = true
         panel.canChooseDirectories = true
-        panel.allowedFileTypes = ["public.directory"]
-        if panel.runModal() == NSApplication.ModalResponse.cancel {
-            return
-        }
-        guard let dir = panel.urls.first else {
-            return
-        }
+        panel.allowedFileTypes = ["cbllog"]
+        panel.begin { resultCode in
+            if resultCode == .cancel {
+                return
+            }
+            let urls = panel.urls
 
-        let doc = try! LogDocument(contentsOf: dir, ofType: "public.folder")
-        NSDocumentController.shared.addDocument(doc)
-        doc.makeWindowControllers()
-        doc.showWindows()
+            do {
+                guard let first = urls.first else {
+                    return
+                }
+                let doc = try LogDocument(contentsOf: first, ofType: first.pathExtension)
+                try doc.addFiles(Array(urls.dropFirst()))
+
+                NSDocumentController.shared.addDocument(doc)
+                doc.makeWindowControllers()
+                doc.showWindows()
+            } catch {
+                NSApp.presentError(error)
+            }
+        }
     }
 
 }

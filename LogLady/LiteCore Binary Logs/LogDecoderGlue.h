@@ -7,6 +7,8 @@
 #pragma once
 #include <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 #ifdef __cplusplus
 extern "C" {
 #define NOEXCEPT noexcept
@@ -26,8 +28,8 @@ extern "C" {
 
     int NextLogEntry(BinaryLogEntry*) NOEXCEPT;
 
-    NSString* LogEntryDomain(void) NOEXCEPT;
-    NSString* LogEntryObjectDescription(void) NOEXCEPT;
+    NSString* _Nullable LogEntryDomain(void) NOEXCEPT;
+    NSString* _Nullable LogEntryObjectDescription(void) NOEXCEPT;
     NSString* LogEntryMessage(void) NOEXCEPT;
 
     void EndLogDecoder(void) NOEXCEPT;
@@ -36,3 +38,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+NS_ASSUME_NONNULL_END

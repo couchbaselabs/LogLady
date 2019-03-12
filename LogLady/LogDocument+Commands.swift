@@ -20,7 +20,7 @@ extension LogDocument {
 
         let pb = NSPasteboard.general
         pb.clearContents()
-        pb.setString(lines, forType: NSPasteboard.PasteboardType.string)
+        pb.setString(lines, forType: .string)
     }
 
 
@@ -285,7 +285,7 @@ extension LogDocument {
 
     private func checkMenuItem(_ item: NSValidatedUserInterfaceItem, checked: Bool) {
         if let item = (item as? NSMenuItem) {
-            item.state = (checked ? NSControl.StateValue.on : NSControl.StateValue.off)
+            item.state = (checked ? .on : .off)
         }
     }
 

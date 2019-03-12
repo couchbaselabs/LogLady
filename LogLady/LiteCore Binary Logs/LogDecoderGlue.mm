@@ -72,6 +72,8 @@ int NextLogEntry(BinaryLogEntry *e) noexcept {
 
 
 NSString* LogEntryDomain(void) noexcept {
+    if (decoder->domain().empty())
+        return nil;
     return @(decoder->domain().c_str());
 }
 

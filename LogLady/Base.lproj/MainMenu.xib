@@ -69,7 +69,7 @@
                                     <action selector="openDocument:" target="-1" id="bVn-NM-KNZ"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Open Multiple..." keyEquivalent="O" id="pgw-lY-VXC">
+                            <menuItem title="Open Group..." keyEquivalent="O" id="pgw-lY-VXC">
                                 <connections>
                                     <action selector="openLogDirectory:" target="Voe-Tx-rLC" id="Que-Zg-Hy5"/>
                                 </connections>

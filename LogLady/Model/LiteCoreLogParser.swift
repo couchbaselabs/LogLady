@@ -32,7 +32,8 @@ class LiteCoreBinaryLogParser : LogParser {
     func parse(filePath: String) throws -> [LogEntry] {
         NSLog("Reading binary log file \(filePath)")
         guard DecodeLogFile(filePath) else {
-            throw NSError(domain: "LogLady", code: -1, userInfo: nil)
+            throw NSError(domain: "LogLady", code: -2,
+                          userInfo: [NSLocalizedFailureReasonErrorKey: "Unable to read the binary log file."])
         }
 
         var objects = [UInt64:String]()
@@ -43,14 +44,18 @@ class LiteCoreBinaryLogParser : LogParser {
         while true {
             let status = NextLogEntry(&e)
             guard status >= 0 else {
-                throw NSError(domain: "LogLady", code: -1, userInfo: nil)
+                throw NSError(domain: "LogLady", code: -3,
+                              userInfo: [NSLocalizedFailureReasonErrorKey: "An error occurred reading the file."])
             }
             if status == 0 {
                 break
             }
 
             let timestamp = Double(e.secs) + Double(e.microsecs) / 1.0e6
-            let domain = LogDomain.named(LogEntryDomain())
+            var domain : LogDomain? = nil
+            if let domainStr = LogEntryDomain() {
+                domain = LogDomain.named(domainStr)
+            }
 
             var object: Substring? = nil
             if e.objectID > 0 {
