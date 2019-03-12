@@ -33,3 +33,5 @@ macOS; any recent version from 10.11 up should suffice.
 1. Check out the repo
 2. Open `Log Lady.xcodeproj` in Xcode (version 10 or later)
 3. Build (Cmd-B) or Archive (you may need to adjust the code-signing settings)
+
+... or just [download the latest release](https://github.com/couchbaselabs/LogLady/releases).
