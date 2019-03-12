@@ -151,6 +151,7 @@ extension LogDocument: NSTableViewDelegate {
 
     private static var kDateFont: NSFont {
         // Set font attributes to use lining figures (monospaced digits) for time column:
+        // Credit to: <https://www.raizlabs.com/dev/2015/08/advanced-ios-typography/>
         let baseFont = NSFont.systemFont(ofSize: NSFont.smallSystemFontSize, weight: .light)
         let descriptor = baseFont.fontDescriptor.addingAttributes([
             NSFontDescriptor.AttributeName.featureSettings: [

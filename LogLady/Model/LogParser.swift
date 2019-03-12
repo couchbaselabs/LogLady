@@ -17,7 +17,7 @@ func ParseLogFile(_ url: URL) throws -> [LogEntry] {
     } else if url.pathExtension == "cbllog" {
         entries = try LiteCoreBinaryLogParser().parse(url)
     } else {
-        entries = try CocoaLogParser().parse(url) ?? LiteCoreLogParser().parse(url)
+        entries = try LiteCoreLogParser().parse(url) ?? CocoaLogParser().parse(url) ?? AndroidLogParser().parse(url) ?? AndroidOlderLogParser().parse(url)
     }
     guard let gotEntries = entries else {
         throw NSError(domain: "LogLady", code: -1,
@@ -40,7 +40,8 @@ func LiteCoreLogParser() -> LogParser {
     dateFormatter.dateFormat = "HH:mm:ss"
     dateFormatter.locale = Locale(identifier: "en_US_POSIX")
     dateFormatter.defaultDate = Date(timeIntervalSince1970: round(Date().timeIntervalSince1970))
-    return try! TextLogParser(regexStr: regex, dateFormat: dateFormatter)
+    return try! TextLogParser(regexStr: regex, dateFormat: dateFormatter,
+                              groups: TextLogParser.Groups(dateStr: 1, subSeconds: 2, domain: 3, level: 4, object: 5, message: 6))
 }
 
 
@@ -51,15 +52,52 @@ func CocoaLogParser() -> LogParser {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
     dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-    return try! TextLogParser(regexStr: regex, dateFormat: dateFormatter)
+    return try! TextLogParser(regexStr: regex, dateFormat: dateFormatter,
+                              groups: TextLogParser.Groups(dateStr: 1, subSeconds: 2, domain: 3, level: 4, object: 5, message: 6))
+}
+
+
+func AndroidOlderLogParser() -> LogParser {
+    // Logs from Android apps (logcat), pre CBL-2.5
+    //    03-12 18:49:18.980 11558-11575/com.couchbase.todo I/LiteCore [Sync]: {Repl#1} activityLevel=busy: connectionState=2
+    let regex = "^([\\d-]+ [\\d:]+)(\\.\\d+)\\s\\d+-\\d+/\\S+\\s(\\w)\\/(?:LiteCore\\s\\[)?(\\w+)\\]?:\\s(?:\\{(.+?)\\}\\s)?(.+)$"
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "MM-dd HH:mm:ss"
+    dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+    return try! TextLogParser(regexStr: regex, dateFormat: dateFormatter,
+                              groups: TextLogParser.Groups(dateStr: 1, subSeconds: 2, domain: 4, level: 3, object: 5, message: 6))
+}
+
+
+func AndroidLogParser() -> LogParser {
+    // Logs from Android apps (logcat), CBL-2.5+
+    //    2019-03-12 13:22:37.660 7042-7058/com.couchbase.lite.test D/CouchbaseLite/DATABASE: {N8litecore8DataFile6SharedE#5} adding DataFile 0xd457d980
+    let regex = "^([\\d-]+ [\\d:]+)(\\.\\d+)\\s\\d+-\\d+/\\S+\\s(\\w)\\/(?:CouchbaseLite/)?(\\w+):\\s(?:\\{(.+?)\\}\\s)?(.+)$"
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+    return try! TextLogParser(regexStr: regex, dateFormat: dateFormatter,
+                              groups: TextLogParser.Groups(dateStr: 1, subSeconds: 2, domain: 4, level: 3, object: 5, message: 6))
 }
 
 
 class TextLogParser : LogParser {
 
-    init(regexStr: String, dateFormat: DateFormatter) throws {
+    // This gives the group # in the regex of each feature
+    struct Groups {
+        let dateStr : Int
+        let subSeconds : Int
+        let domain : Int
+        let level : Int
+        let object : Int
+        let message : Int
+    }
+
+
+    init(regexStr: String, dateFormat: DateFormatter, groups: Groups) throws {
         self.lineRegex = try NSRegularExpression(pattern: regexStr)
         self.dateFormatter = dateFormat
+        self.groups = groups
     }
 
     func parse(_ url: URL) throws -> [LogEntry]? {
@@ -98,6 +136,7 @@ class TextLogParser : LogParser {
 
     private let dateFormatter: DateFormatter
     private let lineRegex: NSRegularExpression
+    private let groups: Groups
 
     private var index = 0
 
@@ -108,46 +147,37 @@ class TextLogParser : LogParser {
             return LogEntry(index: index, line: subLine)
         }
 
-        guard let dateStr = matched(m, .DateStr, in: line),
+        guard let dateStr = matched(m, groups.dateStr, in: line),
             let date = dateFormatter.date(from: String(dateStr)) else {
                 return LogEntry(index: index, line: subLine)
         }
         var timestamp = date.timeIntervalSince1970
 
-        if let subSecondsStr = matched(m, .SubSeconds, in: line),
+        if let subSecondsStr = matched(m, groups.subSeconds, in: line),
             let subSeconds = Double(subSecondsStr) {
             timestamp += subSeconds
         }
 
         var domain: LogDomain? = nil
-        if let domainStr = matched(m, .Domain, in: line) {
+        if let domainStr = matched(m, groups.domain, in: line) {
             domain = LogDomain.named(String(domainStr))
         }
 
         var level = LogLevel.Info
-        if let levelName = matched(m, .Level, in: line),
+        if let levelName = matched(m, groups.level, in: line),
             let lv = TextLogParser.kLevelsByName[levelName.lowercased()] {
             level = lv
         }
 
-        let object = matched(m, .Object, in: line)
-        let message = matched(m, .Message, in: line)!
+        let object = matched(m, groups.object, in: line)
+        let message = matched(m, groups.message, in: line)!
 
         return LogEntry(index: index, line: subLine, timestamp: timestamp, level: level,
                         domain: domain, object: object, message: message)
     }
 
-    enum Matched : Int {
-        case DateStr = 1
-        case SubSeconds
-        case Domain
-        case Level
-        case Object
-        case Message
-    }
-
-    private func matched(_ match: NSTextCheckingResult, _ group: Matched, in str: String) -> Substring? {
-        guard let r = Range(match.range(at: group.rawValue), in: str) else {
+    private func matched(_ match: NSTextCheckingResult, _ group: Int, in str: String) -> Substring? {
+        guard let r = Range(match.range(at: group), in: str) else {
             return nil
         }
         return str[r]
@@ -159,5 +189,10 @@ class TextLogParser : LogParser {
         "info":     LogLevel.Info,
         "warning":  LogLevel.Warning,
         "error":    LogLevel.Error,
+        "d":        LogLevel.Debug,
+        "v":        LogLevel.Verbose,
+        "i":        LogLevel.Info,
+        "w":        LogLevel.Warning,
+        "e":        LogLevel.Error,
     ]
 }
