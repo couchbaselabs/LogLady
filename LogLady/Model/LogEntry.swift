@@ -55,10 +55,14 @@ extension LogDomain : Hashable {
 
 struct LogFilter {
     var onlyMarked = false
-    var minLevel: LogLevel = LogLevel.None
+    var minLevel: LogLevel = .None
     var domains: Set<LogDomain?>? = nil
     var object: Substring? = nil
     var string: String? = nil
+
+    var isEmpty: Bool {
+        return !onlyMarked && minLevel == .None && domains == nil && object == nil && string == nil
+    }
 }
 
 
@@ -81,7 +85,7 @@ class LogEntry {
     }
 
     convenience init(index: Int, line: Substring) {
-        self.init(index: index, line: line, date: nil, level: LogLevel.None, domain: nil,
+        self.init(index: index, line: line, date: nil, level: .None, domain: nil,
                   object: nil, message: line)
     }
 

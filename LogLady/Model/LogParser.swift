@@ -184,15 +184,15 @@ class TextLogParser : LogParser {
     }
 
     private static let kLevelsByName : [String:LogLevel] = [
-        "debug":    LogLevel.Debug,
-        "verbose":  LogLevel.Verbose,
-        "info":     LogLevel.Info,
-        "warning":  LogLevel.Warning,
-        "error":    LogLevel.Error,
-        "d":        LogLevel.Debug,
-        "v":        LogLevel.Verbose,
-        "i":        LogLevel.Info,
-        "w":        LogLevel.Warning,
-        "e":        LogLevel.Error,
+        "debug":    .Debug,
+        "verbose":  .Verbose,
+        "info":     .Info,
+        "warning":  .Warning,
+        "error":    .Error,
+        "d":        .Debug,         // Android logs use a single letter
+        "v":        .Verbose,
+        "i":        .Info,
+        "w":        .Warning,
+        "e":        .Error,
     ]
 }

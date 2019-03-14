@@ -247,6 +247,7 @@
                                         <action trigger="doubleAction" selector="flag:" target="-2" id="qMZ-Vf-iny"/>
                                         <outlet property="dataSource" destination="-2" id="DMo-u9-nuN"/>
                                         <outlet property="delegate" destination="-2" id="R9T-eT-dBC"/>
+                                        <outlet property="menu" destination="Ach-5J-1eg" id="ztQ-lc-AT5"/>
                                     </connections>
                                 </tableView>
                             </subviews>
@@ -369,6 +370,55 @@
                 <outlet property="findBarContainer" destination="Qo9-sv-TEM" id="395-nj-GhT"/>
             </connections>
         </textFinder>
+        <menu id="Ach-5J-1eg" userLabel="Context Menu">
+            <items>
+                <menuItem title="Flag" id="meu-33-whl">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="flag:" target="-2" id="rSM-Qj-Wir"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="l0d-Kr-EDk"/>
+                <menuItem title="Focus On Selected Rows" id="HXH-cb-zCj">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="filterToSelectedRows:" target="-2" id="EOC-df-GEb"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Hide Rows Above" id="oqd-pA-fgI">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="hideRowsBefore:" target="-2" id="Gpr-Du-OyG"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Hide Rows Below" id="tsN-Xa-CfK">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="hideRowsAfter:" target="-2" id="kDK-o1-AxS"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Clear Row Focus" id="ljZ-HA-NFs">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="clearRowFilter:" target="-2" id="tsV-kb-6oE"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="id2-yC-PYu"/>
+                <menuItem title="Focus On Object" id="T75-fc-3KW">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="toggleFocusObject:" target="-2" id="wIm-jh-Wsm"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Clear All Filters" id="6RG-dS-kQs">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="clearFilters:" target="-2" id="4tT-o5-a46"/>
+                    </connections>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="226" y="338"/>
+        </menu>
     </objects>
     <resources>
         <image name="flag" width="384" height="384"/>

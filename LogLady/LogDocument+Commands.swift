@@ -11,9 +11,46 @@ import Cocoa
 
 extension LogDocument {
 
+    var targetedRowIndexes : IndexSet {
+        let clickedRow = _tableView.clickedRow
+        let sel = _tableView.selectedRowIndexes
+        if clickedRow < 0 || sel.contains(clickedRow) {
+            return sel
+        } else {
+            return IndexSet(integer: clickedRow)
+        }
+    }
+
+    var firstTargetedRow : Int? {
+        var row = _tableView.clickedRow
+        if row >= 0 {
+            return row
+        }
+        row = _tableView.selectedRow
+        if row >= 0 {
+            return row
+        }
+        return nil
+    }
+
+    var firstTargetedEntry : LogEntry? {
+        guard let row = self.firstTargetedRow else {
+            return nil
+        }
+        return _entries[row]
+    }
+
+    var hasTargetedRows : Bool {
+        return _tableView.selectedRow >= 0 || _tableView.clickedRow >= 0
+    }
+
+
+    //////// ACTIONS:
+
+
     @IBAction func copy(_ sender: AnyObject) {
         var lines = ""
-        for row in _tableView.selectedRowIndexes {
+        for row in self.targetedRowIndexes {
             lines += _entries[row].sourceLine + "\n"
         }
         NSLog("COPIED: \(lines)")
@@ -79,7 +116,7 @@ extension LogDocument {
             }
         }
 
-        let indexes = _tableView.selectedRowIndexes
+        let indexes = self.targetedRowIndexes
         for row in indexes {
             let entry = _entries[row]
             if state == nil {
@@ -91,6 +128,10 @@ extension LogDocument {
         }
         _tableView.reloadData(forRowIndexes: indexes,
                               columnIndexes: IndexSet(0..<_tableView.tableColumns.count))
+    }
+
+    var selectionIsFlagged : Bool {
+        return self.firstTargetedEntry?.flagged ?? false
     }
 
 
@@ -180,7 +221,7 @@ extension LogDocument {
 
     @IBAction func toggleFocusObject(_ sender: AnyObject) {
         if _filter.object == nil {
-            guard let row = _tableView.selectedRowIndexes.first else {
+            guard let row = self.targetedRowIndexes.first else {
                 return
             }
             let entry = _entries[row]
@@ -242,13 +283,13 @@ extension LogDocument {
     }
 
     @IBAction func hideRowsBefore(_ sender: AnyObject) {
-        if let first = _tableView.selectedRowIndexes.first {
+        if let first = self.targetedRowIndexes.first {
             self.filterRange = _entries[first].index ..< _filterRange.upperBound
         }
     }
 
     @IBAction func hideRowsAfter(_ sender: AnyObject) {
-        if let last = _tableView.selectedRowIndexes.last {
+        if let last = self.targetedRowIndexes.last {
             self.filterRange = Range(_filterRange.lowerBound ... _entries[last].index)
         }
     }
@@ -264,18 +305,27 @@ extension LogDocument {
     override func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
         switch item.action {
         case #selector(copy(_:)),
-             #selector(flag(_:)),
-             #selector(filterToSelectedRows(_:)),
-             #selector(jumpToSelection(_:)),
              #selector(hideRowsBefore(_:)),
              #selector(hideRowsAfter(_:)):
+            return self.hasTargetedRows
+        case #selector(filterToSelectedRows(_:)),
+             #selector(jumpToSelection(_:)):
             return _tableView.selectedRow >= 0
+        case #selector(flag(_:)):
+            titleMenuItem(item, title: self.selectionIsFlagged ? "Unflag" : "Flag")
+            return self.hasTargetedRows
         case #selector(toggleHideUnmarked(_:)):
             checkMenuItem(item, checked: _filter.onlyMarked)
             return true
         case #selector(toggleFocusObject(_:)):
+            let object = _filter.object ?? self.firstTargetedEntry?.object
             checkMenuItem(item, checked: _filter.object != nil)
-            return _filter.object != nil || _tableView.selectedRow >= 0
+            titleMenuItem(item, title: (object != nil ? "Focus On Object “\(object!)”" : "Focus On Object"))
+            return object != nil
+        case #selector(clearRowFilter(_:)):
+            return (self.filterRange != 0 ..< _allEntries.count)
+        case #selector(clearFilters(_:)):
+            return (self.filterRange != 0 ..< _allEntries.count) || !_filter.isEmpty
         case #selector(performTextFinderAction(_:)):
             return _textFinder.validateAction(NSTextFinder.Action(rawValue: item.tag)!)
         default:
@@ -286,6 +336,12 @@ extension LogDocument {
     private func checkMenuItem(_ item: NSValidatedUserInterfaceItem, checked: Bool) {
         if let item = (item as? NSMenuItem) {
             item.state = (checked ? .on : .off)
+        }
+    }
+
+    private func titleMenuItem(_ item: NSValidatedUserInterfaceItem, title: String) {
+        if let item = (item as? NSMenuItem) {
+            item.title = title
         }
     }
 
