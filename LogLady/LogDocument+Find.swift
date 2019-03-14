@@ -37,7 +37,7 @@ extension LogDocument : NSTextFinderClient {
 
     @IBAction func performTextFinderAction(_ sender: AnyObject?) {
         if let item = sender as? NSValidatedUserInterfaceItem {
-            NSLog("----- TextFinder action \(item.tag) for '\(item.action)'")
+            NSLog("----- TextFinder action \(item.tag) for '\(item.action!)'")
             _textFinder.performAction(NSTextFinder.Action(rawValue: item.tag)!)
         }
     }
