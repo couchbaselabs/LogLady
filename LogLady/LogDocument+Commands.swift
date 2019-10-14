@@ -107,15 +107,19 @@ extension LogDocument {
     ///// FLAGGING & SELECTING:
 
 
-    @IBAction func flag(_ sender: AnyObject) {
-        var state: Bool? = nil
-        if let menu = sender as? NSMenuItem {
-            if menu.title.count == 1 {
-                _flagMarker = menu.title + " "
-                state = true
-            }
-        }
+    @IBAction func toggleFlag(_ sender: AnyObject) {
+        flagSelection(flagged: nil)
+    }
 
+
+    @IBAction func flag(_ sender: AnyObject) {
+        let menu = sender as! NSMenuItem
+        _flagMarker = menu.title + " "
+        flagSelection(flagged: true);
+    }
+
+    func flagSelection(flagged: Bool?) {
+        var state = flagged
         let indexes = self.targetedRowIndexes
         for row in indexes {
             let entry = _entries[row]
@@ -311,8 +315,10 @@ extension LogDocument {
         case #selector(filterToSelectedRows(_:)),
              #selector(jumpToSelection(_:)):
             return _tableView.selectedRow >= 0
-        case #selector(flag(_:)):
+        case #selector(toggleFlag):
             titleMenuItem(item, title: self.selectionIsFlagged ? "Unflag" : "Flag")
+            return self.hasTargetedRows
+        case #selector(flag(_:)):
             return self.hasTargetedRows
         case #selector(toggleHideUnmarked(_:)):
             checkMenuItem(item, checked: _filter.onlyMarked)

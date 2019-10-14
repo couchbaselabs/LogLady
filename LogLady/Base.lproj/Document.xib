@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15400" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.64"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15400"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -21,14 +21,14 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
             <rect key="contentRect" x="149" y="878" width="721" height="413"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="3360" height="1867"/>
             <value key="minSize" type="size" width="500" height="200"/>
             <view key="contentView" id="gIp-Ho-8D9">
                 <rect key="frame" x="0.0" y="0.0" width="721" height="413"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" preferredMaxLayoutWidth="264" translatesAutoresizingMaskIntoConstraints="NO" id="Hz6-mo-xeY">
-                        <rect key="frame" x="237" y="196" width="248" height="22"/>
+                        <rect key="frame" x="237" y="196" width="248" height="21"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Your document contents here" id="JDq-Ah-v2f">
                             <font key="font" metaFont="system" size="18"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -42,16 +42,16 @@
                             <rect key="frame" x="1" y="0.0" width="721" height="414"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" autosaveColumns="NO" typeSelect="NO" rowHeight="18" headerView="ibD-jQ-Elm" viewBased="YES" id="vvY-KH-z3l">
+                                <tableView verticalHuggingPriority="750" ambiguous="YES" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" autosaveColumns="NO" typeSelect="NO" rowHeight="18" headerView="ibD-jQ-Elm" viewBased="YES" id="vvY-KH-z3l">
                                     <rect key="frame" x="0.0" y="0.0" width="721" height="389"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <size key="intercellSpacing" width="3" height="1"/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
                                         <tableColumn identifier="index" editable="NO" width="50" minWidth="10" maxWidth="3.4028234663852886e+38" id="V5q-Xv-b94">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Line">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="label" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </tableHeaderCell>
@@ -83,7 +83,7 @@
                                         </tableColumn>
                                         <tableColumn identifier="time" editable="NO" width="104" minWidth="104" maxWidth="104" id="fbO-cF-cOf">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Timestamp">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="label" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
@@ -116,7 +116,7 @@
                                         </tableColumn>
                                         <tableColumn identifier="level" editable="NO" width="20" minWidth="20" maxWidth="220" id="9gO-gc-0pA">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="label" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
@@ -145,7 +145,7 @@
                                         </tableColumn>
                                         <tableColumn identifier="domain" editable="NO" width="64" minWidth="60" maxWidth="180" id="fgu-FA-Gkr">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Domain">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="label" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </tableHeaderCell>
@@ -164,7 +164,7 @@
                                                             <rect key="frame" x="0.0" y="0.0" width="64" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" usesSingleLineMode="YES" id="eDb-nJ-RSW">
-                                                                <font key="font" metaFont="smallSystem"/>
+                                                                <font key="font" metaFont="label" size="11"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
@@ -178,7 +178,7 @@
                                         </tableColumn>
                                         <tableColumn identifier="object" editable="NO" width="125.5" minWidth="80" maxWidth="200" id="Z0H-RI-lau">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Object">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="label" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </tableHeaderCell>
@@ -197,7 +197,7 @@
                                                             <rect key="frame" x="0.0" y="0.0" width="126" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" usesSingleLineMode="YES" id="kTZ-NH-MUa">
-                                                                <font key="font" metaFont="smallSystem"/>
+                                                                <font key="font" metaFont="label" size="11"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
@@ -209,9 +209,9 @@
                                                 </tableCellView>
                                             </prototypeCellViews>
                                         </tableColumn>
-                                        <tableColumn identifier="message" width="339" minWidth="100" maxWidth="3.4028234663852886e+38" id="hDb-nr-1tL">
+                                        <tableColumn identifier="message" width="339.5" minWidth="100" maxWidth="3.4028234663852886e+38" id="hDb-nr-1tL">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Message">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="label" size="11"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </tableHeaderCell>
@@ -229,7 +229,7 @@
                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Opp-Z7-4YB">
                                                             <rect key="frame" x="0.0" y="0.0" width="337" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" sendsActionOnEndEditing="YES" title="Table View Cell" id="fov-b3-s3w">
+                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" sendsActionOnEndEditing="YES" title="Table View Cell" usesSingleLineMode="YES" id="fov-b3-s3w">
                                                                 <font key="font" size="10" name="Menlo-Regular"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -244,7 +244,7 @@
                                         </tableColumn>
                                     </tableColumns>
                                     <connections>
-                                        <action trigger="doubleAction" selector="flag:" target="-2" id="qMZ-Vf-iny"/>
+                                        <action trigger="doubleAction" selector="toggleFlag:" target="-2" id="r9R-h7-3pw"/>
                                         <outlet property="dataSource" destination="-2" id="DMo-u9-nuN"/>
                                         <outlet property="delegate" destination="-2" id="R9T-eT-dBC"/>
                                         <outlet property="menu" destination="Ach-5J-1eg" id="ztQ-lc-AT5"/>
@@ -281,7 +281,7 @@
                             <rect key="frame" x="0.0" y="14" width="96" height="19"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <searchFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="Filter" usesSingleLineMode="YES" bezelStyle="round" sendsSearchStringImmediately="YES" id="JvX-lB-zQH">
-                                <font key="font" metaFont="smallSystem"/>
+                                <font key="font" metaFont="label" size="11"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                             </searchFieldCell>
@@ -295,7 +295,7 @@
                         <size key="minSize" width="19" height="12"/>
                         <size key="maxSize" width="19" height="12"/>
                         <connections>
-                            <action selector="flag:" target="-2" id="Ai8-cL-Vvk"/>
+                            <action selector="toggleFlag:" target="-1" id="x2S-co-ePx"/>
                         </connections>
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="5E975A70-62D5-4C30-8871-CA383A7A1200" label="Domains" paletteLabel="Domain Filter" sizingBehavior="auto" id="wPv-oD-cAE">
@@ -305,7 +305,7 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <popUpButtonCell key="cell" type="roundTextured" title="All Domains" bezelStyle="texturedRounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="border" tag="-2" imageScaling="proportionallyDown" inset="2" selectedItem="H8s-Xr-jih" id="MNH-Fe-Ar3">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" metaFont="smallSystem"/>
+                                <font key="font" metaFont="label" size="11"/>
                                 <menu key="menu" id="wh1-OJ-vqU">
                                     <items>
                                         <menuItem title="All Domains" state="on" tag="-2" id="H8s-Xr-jih"/>
@@ -329,7 +329,7 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <popUpButtonCell key="cell" type="roundTextured" title="All Levels" bezelStyle="texturedRounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="aQV-xZ-gGc" id="UvV-HU-DGl">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" metaFont="smallSystem"/>
+                                <font key="font" metaFont="label" size="11"/>
                                 <menu key="menu" id="98R-b4-UJ8">
                                     <items>
                                         <menuItem title="All Levels" state="on" id="aQV-xZ-gGc"/>
