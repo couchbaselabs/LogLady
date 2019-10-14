@@ -17,11 +17,21 @@ func ParseLogFile(_ url: URL) throws -> [LogEntry] {
     } else if url.pathExtension == "cbllog" {
         entries = try LiteCoreBinaryLogParser().parse(url)
     } else {
-        entries = try LiteCoreLogParser().parse(url) ?? CocoaLogParser().parse(url) ?? AndroidLogParser().parse(url) ?? AndroidOlderLogParser().parse(url)
+        entries = try LiteCoreLogParser().parse(url) ?? CocoaLogParser().parse(url) ?? AndroidLogParser().parse(url) ?? AndroidOlderLogParser().parse(url) ?? SyncGatewayLogParser().parse(url)
     }
     guard let gotEntries = entries else {
         throw NSError(domain: "LogLady", code: -1,
-                      userInfo: [NSLocalizedFailureReasonErrorKey: "The file does not appear to be a recognized Couchbase Lite log type."])
+                      userInfo: [NSLocalizedFailureReasonErrorKey: "The file does not appear to be a recognized Couchbase Lite or Sync Gateway log type."])
+    }
+    return gotEntries
+}
+
+
+func ParseLogText(_ text: String) throws -> [LogEntry] {
+    let entries = try LiteCoreLogParser().parse(text) ?? CocoaLogParser().parse(text) ?? AndroidLogParser().parse(text) ?? AndroidOlderLogParser().parse(text) ?? SyncGatewayLogParser().parse(text)
+    guard let gotEntries = entries else {
+        throw NSError(domain: "LogLady", code: -1,
+                      userInfo: [NSLocalizedFailureReasonErrorKey: "The text does not appear to be Couchbase Lite or Sync Gateway logs."])
     }
     return gotEntries
 }
@@ -31,8 +41,12 @@ protocol LogParser {
     func parse(_: URL) throws -> [LogEntry]?
 }
 
+protocol TextLogParser : LogParser {
+    func parse(_: String) throws -> [LogEntry]?
+}
 
-func LiteCoreLogParser() -> LogParser {
+
+func LiteCoreLogParser() -> TextLogParser {
     // Logs from LiteCore itself, or its LogDecoder:
     //     18:21:02.502713| [Sync] WARNING: {repl#1234} Woe is me
     let regex = "^(\\d\\d:\\d\\d:\\d\\d)(\\.\\d+)\\|\\s*(?:(?:\\[(\\w+)\\])(?:\\s(\\w+))?:\\s*(?:\\{(.+?)\\})?\\s*)?(.*)$"
@@ -40,48 +54,60 @@ func LiteCoreLogParser() -> LogParser {
     dateFormatter.dateFormat = "HH:mm:ss"
     dateFormatter.locale = Locale(identifier: "en_US_POSIX")
     dateFormatter.defaultDate = Date(timeIntervalSince1970: round(Date().timeIntervalSince1970))
-    return try! TextLogParser(regexStr: regex, dateFormat: dateFormatter,
-                              groups: TextLogParser.Groups(dateStr: 1, subSeconds: 2, domain: 3, level: 4, object: 5, message: 6))
+    return try! TextLogParserImpl(regexStr: regex, dateFormat: dateFormatter,
+                              groups: TextLogParserImpl.Groups(dateStr: 1, subSeconds: 2, domain: 3, level: 4, object: 5, message: 6))
 }
 
 
-func CocoaLogParser() -> LogParser {
+func CocoaLogParser() -> TextLogParser {
     // Logs from iOS/Mac apps.
     //     2019-01-22 00:47:33.200154+0530 My App[2694:52664] CouchbaseLite BLIP Verbose: {BLIPIO#2} Finished
     let regex = "^([\\d-]+ [\\d:]+)(\\.\\d+).*\\[\\d+:\\d+] (?:CouchbaseLite (\\w+) (\\w+): (?:\\{(.+?)\\} )?)?(.*)$"
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
     dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-    return try! TextLogParser(regexStr: regex, dateFormat: dateFormatter,
-                              groups: TextLogParser.Groups(dateStr: 1, subSeconds: 2, domain: 3, level: 4, object: 5, message: 6))
+    return try! TextLogParserImpl(regexStr: regex, dateFormat: dateFormatter,
+                              groups: TextLogParserImpl.Groups(dateStr: 1, subSeconds: 2, domain: 3, level: 4, object: 5, message: 6))
 }
 
 
-func AndroidOlderLogParser() -> LogParser {
+func AndroidOlderLogParser() -> TextLogParser {
     // Logs from Android apps (logcat), pre CBL-2.5
     //    03-12 18:49:18.980 11558-11575/com.couchbase.todo I/LiteCore [Sync]: {Repl#1} activityLevel=busy: connectionState=2
     let regex = "^([\\d-]+ [\\d:]+)(\\.\\d+)\\s\\d+-\\d+/\\S+\\s(\\w)\\/(?:LiteCore\\s\\[)?(\\w+)\\]?:\\s(?:\\{(.+?)\\}\\s)?(.+)$"
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "MM-dd HH:mm:ss"
     dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-    return try! TextLogParser(regexStr: regex, dateFormat: dateFormatter,
-                              groups: TextLogParser.Groups(dateStr: 1, subSeconds: 2, domain: 4, level: 3, object: 5, message: 6))
+    return try! TextLogParserImpl(regexStr: regex, dateFormat: dateFormatter,
+                              groups: TextLogParserImpl.Groups(dateStr: 1, subSeconds: 2, domain: 4, level: 3, object: 5, message: 6))
 }
 
 
-func AndroidLogParser() -> LogParser {
+func AndroidLogParser() -> TextLogParser {
     // Logs from Android apps (logcat), CBL-2.5+
     //    2019-03-12 13:22:37.660 7042-7058/com.couchbase.lite.test D/CouchbaseLite/DATABASE: {N8litecore8DataFile6SharedE#5} adding DataFile 0xd457d980
     let regex = "^([\\d-]+ [\\d:]+)(\\.\\d+)\\s\\d+-\\d+/\\S+\\s(\\w)\\/(?:CouchbaseLite/)?(\\w+):\\s(?:\\{(.+?)\\}\\s)?(.+)$"
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
     dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-    return try! TextLogParser(regexStr: regex, dateFormat: dateFormatter,
-                              groups: TextLogParser.Groups(dateStr: 1, subSeconds: 2, domain: 4, level: 3, object: 5, message: 6))
+    return try! TextLogParserImpl(regexStr: regex, dateFormat: dateFormatter,
+                              groups: TextLogParserImpl.Groups(dateStr: 1, subSeconds: 2, domain: 4, level: 3, object: 5, message: 6))
 }
 
 
-class TextLogParser : LogParser {
+func SyncGatewayLogParser() -> TextLogParser {
+    // Logs from Sync Gateway
+    //    2019-10-14T14:01:07.006-07:00 [INF] HTTP: Reset guest user to config
+    let regex = "^([\\d-:T]+)(\\.\\d+)[-+][\\d:]+ \\[(\\w+)\\] (?:([\\w+]+): +)?(?:(#\\d+:|c:\\[[0-9a-f]+\\]) )?(.*)$"
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+    dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+    return try! TextLogParserImpl(regexStr: regex, dateFormat: dateFormatter,
+                              groups: TextLogParserImpl.Groups(dateStr: 1, subSeconds: 2, domain: 4, level: 3, object: 5, message: 6))
+}
+
+
+class TextLogParserImpl : TextLogParser {
 
     // This gives the group # in the regex of each feature
     struct Groups {
@@ -101,10 +127,10 @@ class TextLogParser : LogParser {
     }
 
     func parse(_ url: URL) throws -> [LogEntry]? {
-        return parse(data: try String(contentsOf: url, encoding: .utf8))
+        return parse(try String(contentsOf: url, encoding: .utf8))
     }
 
-    func parse(data: String) -> [LogEntry]? {
+    func parse(_ data: String) -> [LogEntry]? {
         self.index = 0
         var messages = [LogEntry]()
         var matched = false
@@ -165,7 +191,7 @@ class TextLogParser : LogParser {
 
         var level = LogLevel.Info
         if let levelName = matched(m, groups.level, in: line),
-            let lv = TextLogParser.kLevelsByName[levelName.lowercased()] {
+            let lv = TextLogParserImpl.kLevelsByName[levelName.lowercased()] {
             level = lv
         }
 
@@ -177,7 +203,7 @@ class TextLogParser : LogParser {
     }
 
     private func matched(_ match: NSTextCheckingResult, _ group: Int, in str: String) -> Substring? {
-        guard let r = Range(match.range(at: group), in: str) else {
+        guard group > 0, let r = Range(match.range(at: group), in: str) else {
             return nil
         }
         return str[r]
@@ -189,10 +215,17 @@ class TextLogParser : LogParser {
         "info":     .Info,
         "warning":  .Warning,
         "error":    .Error,
+
         "d":        .Debug,         // Android logs use a single letter
         "v":        .Verbose,
         "i":        .Info,
         "w":        .Warning,
         "e":        .Error,
+
+        "dbg":      .Debug,         // SG logs use 3 letters
+        "trc":      .Verbose,
+        "inf":      .Info,
+        "wrn":      .Warning,
+        "err":      .Error,
     ]
 }

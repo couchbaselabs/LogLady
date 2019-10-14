@@ -64,9 +64,14 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="File" id="bib-Uj-vzu">
                         <items>
-                            <menuItem title="Open…" keyEquivalent="o" id="IAo-SY-fd9">
+                            <menuItem title="New From Clipboard" keyEquivalent="n" id="IAo-SY-fd9">
                                 <connections>
-                                    <action selector="openDocument:" target="-1" id="bVn-NM-KNZ"/>
+                                    <action selector="openLogText:" target="-1" id="k2T-Ni-dRG"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Open…" keyEquivalent="o" id="FlX-cL-9U1">
+                                <connections>
+                                    <action selector="openDocument:" target="-1" id="TRg-eW-kWH"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Open Group..." keyEquivalent="O" id="pgw-lY-VXC">

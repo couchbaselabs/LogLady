@@ -47,6 +47,19 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
     }
 
 
+    override func read(from data: Data, ofType typeName: String) throws {
+        guard let text = String(data: data, encoding: .utf8) else {
+            throw NSError(domain: "LogLady", code: -1,
+                          userInfo: [NSLocalizedFailureReasonErrorKey: "Data is not UTF-8 text"])
+        }
+        _allEntries = try ParseLogText(text)
+        _entries = _allEntries
+        _filterRange = 0 ..< _allEntries.endIndex
+        _entryTextPos = nil
+        _entryTextPosHint = nil
+    }
+
+
     func addFiles(_ urls: [URL]) throws {
         var merged = _allEntries
         for url in urls {

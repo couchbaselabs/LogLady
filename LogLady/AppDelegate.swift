@@ -45,10 +45,36 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 doc.makeWindowControllers()
                 doc.showWindows()
             } catch {
+                NSSound.beep()
                 NSApp.presentError(error)
             }
         }
     }
 
+    @IBAction func openLogText(_ sender: AnyObject) {
+        guard let logText = NSPasteboard.general.data(forType: .string) else {
+            NSSound.beep()
+            return
+        }
+        do {
+            let doc = LogDocument()
+            try doc.read(from: logText, ofType: "Log File")
+            NSDocumentController.shared.addDocument(doc)
+            doc.makeWindowControllers()
+            doc.showWindows()
+        } catch {
+            NSSound.beep()
+            NSApp.presentError(error)
+        }
+    }
+
+    func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
+        switch item.action {
+            case #selector(openLogText(_:)):
+                return NSPasteboard.general.types?.contains(.string) ?? false
+            default:
+                return true
+        }
+    }
 }
 
