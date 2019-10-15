@@ -111,6 +111,11 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
             }
         }
 
+        // If there are no (meaningful) timestamps, hide the table column:
+        if (_allEntries.first {$0.timestamp > 1e6}) == nil {
+            _tableView.tableColumn(withIdentifier: Col.Time)!.isHidden = true
+        }
+
         setupTextFinder()
     }
 
