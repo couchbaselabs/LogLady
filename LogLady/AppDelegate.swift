@@ -11,6 +11,12 @@ import Cocoa
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        NSApp.servicesProvider = self
+
+        NSUpdateDynamicServices() //TEMP
+    }
+
     func applicationShouldOpenUntitledFile(_ sender: NSApplication) -> Bool {
         // Display an Open panel instead of creating an untitled doc, on launch
         DispatchQueue.main.async {
@@ -23,6 +29,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
 
+    
     @IBAction func openLogDirectory(_ sender: AnyObject) {
         let panel = NSOpenPanel()
         panel.allowsMultipleSelection = true
@@ -51,8 +58,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+
     @IBAction func openLogText(_ sender: AnyObject) {
-        guard let logText = NSPasteboard.general.data(forType: .string) else {
+        openLogWindow(fromPasteboard: NSPasteboard.general)
+    }
+
+    // Implementation of the Services menu item "View CBL Log In Log Lady"
+    @objc
+    public func openLogWindowService(_ pboard: NSPasteboard, userData: NSString, error: NSErrorPointer) {
+        openLogWindow(fromPasteboard: pboard)
+    }
+
+    func openLogWindow(fromPasteboard pboard: NSPasteboard) {
+        guard let logText = pboard.data(forType: .string) else {
             NSSound.beep()
             return
         }
@@ -67,6 +85,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             NSApp.presentError(error)
         }
     }
+
 
     func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
         switch item.action {

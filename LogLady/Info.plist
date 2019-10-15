@@ -94,9 +94,9 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0d3</string>
+	<string>1.0d4</string>
 	<key>CFBundleVersion</key>
-	<string>3</string>
+	<string>4</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.developer-tools</string>
 	<key>LSMinimumSystemVersion</key>
@@ -123,6 +123,31 @@
 				<key>public.filename-extension</key>
 				<string>cbllog</string>
 			</dict>
+		</dict>
+	</array>
+	<key>NSServices</key>
+	<array>
+		<dict>
+			<key>NSMenuItem</key>
+			<dict>
+				<key>default</key>
+				<string>View CBL Log In Log Lady</string>
+			</dict>
+			<key>NSMessage</key>
+			<string>openLogWindowService</string>
+			<key>NSPortName</key>
+			<string>Log Lady</string>
+			<key>NSRequiredContext</key>
+			<dict>
+				<key>NSServiceCategory</key>
+				<string>Development</string>
+				<key>NSTextScript</key>
+				<string>Latn</string>
+			</dict>
+			<key>NSSendTypes</key>
+			<array>
+				<string>NSStringPboardType</string>
+			</array>
 		</dict>
 	</array>
 </dict>
