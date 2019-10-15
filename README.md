@@ -1,4 +1,4 @@
-# Log Lady — a Couchbase Lite log viewer
+# Log Lady — a Couchbase Mobile log viewer
 
 Log files are a great debugging and diagnostic tool, but they're difficult to work with. They get extremely long, and interesting events may be hundreds or thousands of lines apart. **Log Lady** is a specialized viewer for log files.
 
@@ -7,6 +7,7 @@ Log files are a great debugging and diagnostic tool, but they're difficult to wo
 * Parses log files into organized table views
   * Doesn't grind to a halt on large files
   * Can directly read binary log files
+  * Services menu item lets you select log text in another app and open it in Log Lady with one click
 * Can filter to lines matching specific text, priority (verbose / info / warning...), category, or even a single object
 * Highlights warnings, errors and debug-only messages
 * Individual lines can be marked with various flags
@@ -15,12 +16,13 @@ Log files are a great debugging and diagnostic tool, but they're difficult to wo
 
 ## What kind of logs?
 
-It would be wonderful to support all kinds of log files, but there are a near-infinite number of formats. We built this tool to look at Couchbase Lite logs, so it only understands how to read those. Specifically:
+It would be wonderful to support all kinds of log files, but there are a near-infinite number of formats. We built this tool to look at Couchbase Mobile logs, so it only understands how to read those. Specifically:
 
-* The binary format (`.cbllog`)
+* The Couchbase Lite binary format (`.cbllog`)
 * The textual form that the binary format translates to
 * Cocoa (iOS/macOS) logs
 * Android logs
+* Sync Gateway logs
 
 If you feel like adding support for more formats, open up LogParser.swift and be prepared to craft some gnarly regular expressions. (Strongly recommended: the [Expressions](https://www.apptorium.com/expressions) app.)
 
