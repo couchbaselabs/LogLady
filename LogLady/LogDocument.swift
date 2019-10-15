@@ -19,7 +19,7 @@ class LogDocument: NSDocument, NSSearchFieldDelegate {
     internal var _entries = [LogEntry]()
     internal var _filter = LogFilter()
     internal var _filterRange = 0..<0
-    internal var _flagMarker : String?
+    internal var _flagMarker : String = "🚩 "
 
     // Starting index of each entry's .message string, in concatenation of all the messages
     internal var _entryTextPos : [Int]? = nil
