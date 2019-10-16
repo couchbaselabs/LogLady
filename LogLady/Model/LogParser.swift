@@ -49,10 +49,11 @@ protocol TextLogParser : LogParser {
 func LiteCoreLogParser() -> TextLogParser {
     print("Trying LiteCore...")
     // Logs from LiteCore itself, or its LogDecoder:
-    //     | [Sync] WARNING: {repl#1234} Woe is me
+    //     [Sync] WARNING: {repl#1234} Woe is me
     let regex = "\\|\\s(?:(?:\\[(\\w+)\\])(?:\\s(\\w+))?:\\s*(?:\\{(.+?)\\})?\\s*)?(.*)$"
     return TextLogParserImpl(regexStr: regex,
-                              groups: TextLogParserImpl.Groups(domain: 1, level: 2, object: 3, message: 4))
+                             spaceAfterTimestamp: false,
+                             groups: TextLogParserImpl.Groups(domain: 1, level: 2, object: 3, message: 4))
 }
 
 
@@ -70,7 +71,7 @@ func AndroidOlderLogParser() -> TextLogParser {
     print("Trying Android(old)...")
     // Logs from Android apps (logcat), pre CBL-2.5
     //    11558-11575/com.couchbase.todo I/LiteCore [Sync]: {Repl#1} activityLevel=busy: connectionState=2
-    let regex = "\\s\\d+-\\d+/\\S+\\s(\\w)\\/(?:LiteCore\\s\\[)?(\\w+)\\]?:\\s(?:\\{(.+?)\\}\\s)?(.+)$"
+    let regex = "\\d+-\\d+/\\S+\\s(\\w)\\/(?:LiteCore\\s\\[)?(\\w+)\\]?:\\s(?:\\{(.+?)\\}\\s)?(.+)$"
     return TextLogParserImpl(regexStr: regex,
                               groups: TextLogParserImpl.Groups(domain: 2, level: 1, object: 3, message: 4))
 }
@@ -80,7 +81,7 @@ func AndroidLogParser() -> TextLogParser {
     print("Trying Android(new)...")
     // Logs from Android apps (logcat), CBL-2.5+
     //    7042-7058/com.couchbase.lite.test D/CouchbaseLite/DATABASE: {N8litecore8DataFile6SharedE#5} adding DataFile 0xd457d980
-    let regex = "\\s(?:\\d+-\\d+/\\S+\\s)?(\\w)\\/(?:CouchbaseLite/)?(\\w+):\\s(?:\\{(.+?)\\}\\s)?(.+)$"
+    let regex = "(?:\\d+-\\d+/\\S+\\s)?(\\w)\\/(?:CouchbaseLite/)?(\\w+):\\s(?:\\{(.+?)\\}\\s)?(.+)$"
     return TextLogParserImpl(regexStr: regex,
                               groups: TextLogParserImpl.Groups(domain: 2, level: 1, object: 3, message: 4))
 }
@@ -90,7 +91,7 @@ func SyncGatewayLogParser() -> TextLogParser {
     print("Trying SG...")
     // Logs from Sync Gateway
     //    [INF] HTTP: Reset guest user to config
-    let regex = "\\s\\[(\\w{3})\\] (?:([\\w+]+): +)?(?:(#\\d+:|c:\\[[0-9a-f]+\\]) )?(.*)$"
+    let regex = "\\[(\\w{3})\\] (?:([\\w+]+): +)?(?:(#\\d+:|c:\\[[0-9a-f]+\\]) )?(.*)$"
     return TextLogParserImpl(regexStr: regex,
                              groups: TextLogParserImpl.Groups(domain: 2, level: 1, object: 3, message: 4))
 }
@@ -110,6 +111,7 @@ class TextLogParserImpl : TextLogParser {
     private var _lineRegex: NSRegularExpression
     private var _groups: Groups
     private var _timestampParser: TimestampParser?
+    private let _spaceAfterTimestamp : Bool
 
     private var _index = 0
 
@@ -123,8 +125,9 @@ class TextLogParserImpl : TextLogParser {
     }
 
 
-    init(regexStr: String, groups: Groups) {
+    init(regexStr: String, spaceAfterTimestamp: Bool = true, groups: Groups) {
         self._lineRegex = try! NSRegularExpression(pattern: regexStr)
+        self._spaceAfterTimestamp = spaceAfterTimestamp
         self._groups = groups
     }
 
@@ -134,15 +137,20 @@ class TextLogParserImpl : TextLogParser {
 
     func parse(_ data: String) -> [LogEntry]? {
         // First determine the timestamp format, if any:
-        if let parser = (kTimestampFormats.first {$0.parse(data) != nil}) {
-            _timestampParser = parser
-            let pattern = parser.regex.pattern + _lineRegex.pattern
+        if let timestampParser = (kTimestampFormats.first {$0.parse(data) != nil}) {
+            // Prepend the timestamp regex to the line regex:
+            _timestampParser = timestampParser
+            var pattern = timestampParser.regex.pattern
+            if _spaceAfterTimestamp {
+                pattern += "\\s"
+            }
+            pattern += _lineRegex.pattern
             _lineRegex = try! NSRegularExpression(pattern: pattern)
             _groups.domain += 2
             _groups.level += 2
             _groups.object += 2
             _groups.message += 2
-            print("    using date format \(parser.regex.pattern)")
+            print("    using date format \(timestampParser.regex.pattern)")
         }
 
         self._index = 0
@@ -179,6 +187,7 @@ class TextLogParserImpl : TextLogParser {
         let line: Substring = text[range]
         guard let m = _lineRegex.firstMatch(in: text, range: NSRange(range, in: text))
             else {
+                // Couldn't parse the line. See if there's at least a timestamp we can use:
                 if let (ts, rest) = _timestampParser?.parse(String(line)) {
                     return LogEntry(index: _index, line: line, timestamp: ts, level: .None, domain: nil, object: nil, message: rest)
                 } else {
